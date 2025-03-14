@@ -8,7 +8,7 @@ body{
     
     nav {
         background-color: #588157;
-        padding: 15px 0;
+        padding: 15px 30px;
         text-align: center;
     }
     
@@ -178,4 +178,14 @@ min-height: 80px;
 min-width: 30%;
 border-radius: 5px;
 
+}
+
+.submit{
+    width: 25vmin;
+    height: 45px;
+    color: #ffffff;
+    align-self: left;
+    text-align: center;
+    background-color: #588157;
+    border-radius: 5px;
 }
