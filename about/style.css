@@ -1,0 +1,144 @@
+body{
+
+margin: 0;
+font-family: Arial, sans-serif;
+background-color: #dad7cd;
+
+}
+
+nav{
+
+background-color: #588157;
+padding: 15px 0;
+text-align: center;
+
+}
+
+.nav-container{
+
+display: flex;
+justify-content: space-between;
+align-items: center;
+max-width: 1100px;
+margin: 0 auto;
+color: white;
+
+}
+
+.nav-links{
+    
+list-style: none;
+display: flex;
+gap: 40px;
+padding: 0;
+margin: 0 auto;
+
+}
+
+.nav-links a{
+
+color: white;
+text-decoration: none;
+font-weight: bold;
+font-size: 18px;
+
+}
+
+.nav-icons{
+
+display: flex;
+align-items: center;
+gap: 20px;
+
+}
+
+.nav-icons .cart{
+
+font-size: 24px;
+cursor: pointer;
+
+}
+
+.nav-icons a{
+
+color: white;
+text-decoration: none;
+font-weight: bold;
+font-size: 18px;
+
+}
+
+.aboutmain{
+
+display: flex;
+padding: 50px;
+
+}
+
+.about-image img{
+
+height: auto;
+width: 25rem;
+border-radius: 20px;
+
+}
+
+.about-image{
+
+margin-right: 50px;
+
+}
+
+.about-texts h1{
+
+text-align: left;
+font-size: 400%;
+
+}
+
+.about-texts p{
+
+text-align: justify;
+font-size: 180%;
+    
+}
+
+.about-owner{
+
+margin-top: 5%;
+
+}
+
+.owner{
+
+display: flex;
+padding: 50px;
+margin-left: 30px;
+
+}
+
+.owner-image{
+
+margin-right: 50px;
+
+}
+    
+.owner-image img{
+
+border-radius: 50%;
+height: auto;
+width: 20rem;
+
+}
+
+.owner-text h1{
+
+font-size: 300%;
+
+}
+
+.owner-text p{
+
+font-size: 150%;
+    
+}
