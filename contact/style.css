@@ -113,7 +113,7 @@ text-align: center;
 
 .contact-container h1{
 
-font-size: 250%;
+font-size: 180%;
 
 }
 
@@ -125,43 +125,53 @@ font-size: 130%;
 
 .contact-container a{
 
-text-decoration: none;
+
 font-size: 130%;
 color: #000;    
 
 }
 
 .form{
-
+display: flex;
+flex-direction: column;
 margin-top: 5%;
 text-align: center;
-
 }
 
 .form h1{
 
-font-size: 180%;
+font-size: 250%;
 
 }
 
 .forms{
-
+align-self: center;
 display: flex;
 justify-content: center;
+flex-grow: 2;
+width: 50%;
+}
 
+.email{
+    align-self: right;
 }
 
 .email input{
 
 width: 100%;
-margin-left: 10px;
+height: 15px;
 
+
+}
+
+.nameform{
+    align-self: left;
 }
 
 .nameform input{
 
 width: 100%;
-margin-right: 10px;
+height: 15px;
 
 }
 
@@ -173,7 +183,7 @@ text-align: center;
 
 .message input{
 
-width: 30%;
+width: 50%;
 height: 50px;
 min-height: 80px;
 min-width: 30%;
