@@ -147,32 +147,20 @@ font-size: 250%;
 .forms{
 align-self: center;
 display: flex;
-justify-content: center;
-flex-grow: 2;
-width: 50%;
-}
-
-.email{
-    align-self: right;
 }
 
 .email input{
 
-width: 100%;
+width: 35vmin;
 height: 15px;
-
-
-}
-
-.nameform{
-    align-self: left;
+margin-left: 5px;
 }
 
 .nameform input{
 
-width: 100%;
+width: 35vmin;
 height: 15px;
-
+margin-right: 5px;
 }
 
 .message{
@@ -183,7 +171,8 @@ text-align: center;
 
 .message input{
 
-width: 50%;
+margin-top: 15px;
+width: 73vmin;
 height: 50px;
 min-height: 80px;
 min-width: 30%;
