@@ -6,6 +6,7 @@
     <title>Catalogue</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <style>
     body{
@@ -54,16 +55,16 @@
             <div class="collapse navbar-collapse order-2 order-lg-1" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="#">Home</a>
+                        <a class="nav-link text-white fw-bold" href="home.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="#">About Us</a>
+                        <a class="nav-link text-white fw-bold" href="aboutus.html">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="#">Shop</a>
+                        <a class="nav-link text-white fw-bold" href="catalogue.html">Shop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="#">Contact Us</a>
+                        <a class="nav-link text-white fw-bold" href="contact.html">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -130,39 +131,63 @@
             </div>
         </div>
     </section>
-    <section class="footer">
-        <div class="footerdiv">
-            <div class="foot">
-                <div class="address">
-                    <p>Melody Good Store</p>
-                    <p>Tabok, Mandaue</p>
-                    <p>Contact: 09639278793</p>
-                </div>
-                <div class="company">
-                    <p><strong>Company<br></strong></p>
-                    <a href="#">Home<br></a>
-                    <a href="#">About Us<br></a>
-                    <a href="#">Shop<br></a>
-                    <a href="#">Contact<br></a>
-                </div>
-                <div class="contact">
-                    <p><strong>Service</strong></p>
-                    <a href="#">Shipping<br></a>
-                    <a href="#">Returns<br></a>
-                    <a href="#">Privacy Policy<br></a>
-                    <a href="#">Terms and Conditions</a>
-                </div>
-                <div class="updates">
-                    <p>Be able to get updated first on new available products</p>
-                    <a>Email: </a><input type="text" class="textinput">
-                    <a href="#"><br>Submit Email</a>
-                </div>
+    <!--THE FOOTER-->
+    <div class="container">
+        <footer class="py-5">
+          <div class="row">
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Melody Good Store</h5>
+              <ul class="nav flex-column">   
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Tabok Mandaue</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Contact: 09639278793</a></li>
+              </ul>
             </div>
-            <div class="credits">
-                @Cebu Plant Depot 2025. All Rights Reserved
+      
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Company</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About Us</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Shop</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Contact</a></li>
+
+              </ul>
             </div>
-        </div>
-    </section>
+      
+            <div class="col-6 col-md-2 mb-3">
+              <h5>Section</h5>
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Shipping</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Returns</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Privacy Policy</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Terms and Conditions</a></li>
+              </ul>
+            </div>
+      
+            <div class="col-md-5 offset-md-1 mb-3">
+              <form>
+                <h5>Subscribe to New Updates</h5>
+                <p>Be able to get updated first on new available products!</p>
+                <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                  <label for="newsletter1" class="visually-hidden">Email address</label>
+                  <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
+                  <button class="btn btn-primary" type="button">Submit Email</button>
+                </div>
+              </form>
+            </div>
+          </div>
+      
+          <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+            <p>© 2025 Cebu Plant Depot.</p>
+            <ul class="list-unstyled d-flex">
+              <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+              <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+              <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+            </ul>
+          </div>
+        </footer>
+      </div>
+      <!--END OF FOOTER-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
