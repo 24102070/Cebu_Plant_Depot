@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       $insertSql = "INSERT INTO users (fname, lname, email, password, role, phoneNumber, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
       $insertStmt = mysqli_prepare($con, $insertSql);
-      mysqli_stmt_bind_param($insertStmt, "sssss", $fname, $lname, $email, $hashedPassword, $role, $phoneNumber, $address);
+      mysqli_stmt_bind_param($insertStmt, "sssssss", $fname, $lname, $email, $hashedPassword, $role, $phoneNumber, $address);
 
       if (mysqli_stmt_execute($insertStmt)) {
         header("Location: index.php"); // Redirect to login
