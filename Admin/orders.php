@@ -2,23 +2,35 @@
 include("../Main/php/database.php");
 session_start();
 
-// Ensure user is logged in and is an admin
+// Ensure admin is logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../Main/php/index.php");
     exit();
 }
 
-// Process status updates from form
+// Process status update and restock if rejected
 $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['new_status'])) {
     $orderId = (int)$_POST['order_id'];
     $newStatus = $_POST['new_status'];
     $allowed = ['On the Way', 'Rejected', 'Delivered'];
+
     if (in_array($newStatus, $allowed)) {
         $stmt = $con->prepare("UPDATE orders SET status = ? WHERE order_id = ?");
         $stmt->bind_param("si", $newStatus, $orderId);
+
         if ($stmt->execute()) {
             $message = "Order #$orderId marked as \"$newStatus\".";
+
+            if ($newStatus === 'Rejected') {
+                $items = mysqli_query($con, "SELECT product_id, quantity FROM order_items WHERE order_id = $orderId");
+                while ($item = mysqli_fetch_assoc($items)) {
+                    $updateStock = $con->prepare("UPDATE products SET product_quantity = product_quantity + ? WHERE product_id = ?");
+                    $updateStock->bind_param("ii", $item['quantity'], $item['product_id']);
+                    $updateStock->execute();
+                    $updateStock->close();
+                }
+            }
         } else {
             $message = "Failed to update order status.";
         }
@@ -26,12 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['n
     }
 }
 
-// Fetch orders, optionally filter by status
-$statusFilter = '';
-$whereSQL = '';
-if (!empty($_GET['filter']) && in_array($_GET['filter'], ['Pending', 'On the Way', 'Delivered', 'Rejected'])) {
-    $statusFilter = $_GET['filter'];
-    $whereSQL = "WHERE o.status = '" . mysqli_real_escape_string($con, $statusFilter) . "'";
+// Status filter & optional date filtering
+$statusFilter = isset($_GET['filter']) ? $_GET['filter'] : '';
+$startDate = $_GET['start_date'] ?? '';
+$endDate = $_GET['end_date'] ?? '';
+$whereSQL = "WHERE 1=1";
+
+if ($statusFilter && in_array($statusFilter, ['Pending', 'On the Way', 'Delivered', 'Rejected'])) {
+    $whereSQL .= " AND o.status = '" . mysqli_real_escape_string($con, $statusFilter) . "'";
+}
+
+if (!empty($startDate) && !empty($endDate)) {
+    $whereSQL .= " AND DATE(o.order_date) BETWEEN '" . mysqli_real_escape_string($con, $startDate) . "' AND '" . mysqli_real_escape_string($con, $endDate) . "'";
 }
 
 $ordersRes = mysqli_query($con, "
@@ -42,6 +60,7 @@ $ordersRes = mysqli_query($con, "
     ORDER BY o.order_date DESC
 ");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,27 +104,36 @@ $ordersRes = mysqli_query($con, "
         padding: 20px;
         border-radius: 10px;
     }
-    .product-card {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 16px;
-        padding: 15px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    .product-card img {
-        max-width: 100%;
-        border-radius: 8px;
-        height: 150px;
-        object-fit: cover;
-    }
-    .action-buttons a {
-        margin: 5px;
-    }
     table th, table td {
         vertical-align: middle !important;
     }
+    ul {
+        padding-left: 20px;
+        margin: 0;
+    }
+    .bg-item-row {
+        background-color: #f9f9f9;
+    }
+    .filter-form {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
   </style>
+  <script>
+    function toggleItems(orderId) {
+      const row = document.getElementById('items-' + orderId);
+      const btn = document.getElementById('toggle-btn-' + orderId);
+      if (row.style.display === 'none') {
+        row.style.display = 'table-row';
+        btn.textContent = 'Hide Items';
+      } else {
+        row.style.display = 'none';
+        btn.textContent = 'View Items';
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="main">
@@ -121,13 +149,22 @@ $ordersRes = mysqli_query($con, "
 
     <div class="content">
       <h2 class="mb-4">🛠️ Manage Orders</h2>
+
       <?php if ($message): ?>
         <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
       <?php endif; ?>
 
       <?php if ($statusFilter): ?>
-        <div class="mb-3">Showing: <strong><?php echo htmlspecialchars($statusFilter); ?></strong></div>
+        <h5>Viewing: <strong><?php echo htmlspecialchars($statusFilter); ?></strong> orders</h5>
       <?php endif; ?>
+
+      <form method="GET" class="filter-form">
+        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($statusFilter); ?>">
+        <label>From: <input type="date" name="start_date" value="<?php echo htmlspecialchars($startDate); ?>" class="form-control"></label>
+        <label>To: <input type="date" name="end_date" value="<?php echo htmlspecialchars($endDate); ?>" class="form-control"></label>
+        <button type="submit" class="btn btn-dark">Filter</button>
+        <a href="manage_orders.php?filter=<?php echo urlencode($statusFilter); ?>" class="btn btn-secondary">Clear</a>
+      </form>
 
       <table class="table table-bordered bg-white">
         <thead class="table-light">
@@ -157,22 +194,45 @@ $ordersRes = mysqli_query($con, "
                 <form method="POST" class="d-inline">
                   <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                   <input type="hidden" name="new_status" value="On the Way">
-                  <button class="btn btn-success btn-sm">On the Way</button>
+                  <button class="btn btn-success btn-sm mt-1">On the Way</button>
                 </form>
                 <form method="POST" class="d-inline">
                   <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                   <input type="hidden" name="new_status" value="Rejected">
-                  <button class="btn btn-danger btn-sm">Reject</button>
+                  <button class="btn btn-danger btn-sm mt-1">Reject</button>
                 </form>
               <?php elseif ($order['status'] === 'On the Way'): ?>
                 <form method="POST" class="d-inline">
                   <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                   <input type="hidden" name="new_status" value="Delivered">
-                  <button class="btn btn-primary btn-sm">Mark as Delivered</button>
+                  <button class="btn btn-primary btn-sm mt-1">Delivered</button>
                 </form>
               <?php else: ?>
-                <em>N/A</em>
-              <?php endif; ?>
+                <em class="d-block mt-1">N/A</em>
+              <?php endif; ?><br><br>
+              <button class="btn btn-outline-secondary btn-sm mb-1" id="toggle-btn-<?php echo $order['order_id']; ?>" onclick="toggleItems(<?php echo $order['order_id']; ?>)">View Items</button>
+            </td>
+          </tr>
+
+          <tr class="bg-item-row" id="items-<?php echo $order['order_id']; ?>" style="display: none;">
+            <td colspan="8">
+              <strong>Order Items:</strong>
+              <ul class="mb-0">
+                <?php
+                  $orderId = $order['order_id'];
+                  $itemsRes = mysqli_query($con, "
+                    SELECT oi.quantity, (oi.quantity * oi.price) AS subtotal, p.product_name 
+                    FROM order_items oi 
+                    JOIN products p ON oi.product_id = p.product_id 
+                    WHERE oi.order_id = $orderId
+                  ");
+                  while ($item = mysqli_fetch_assoc($itemsRes)) {
+                    echo "<li>" . htmlspecialchars($item['product_name']) .
+                         " × " . intval($item['quantity']) .
+                         " — ₱" . number_format($item['subtotal'], 2) . "</li>";
+                  }
+                ?>
+              </ul>
             </td>
           </tr>
         <?php endwhile; ?>

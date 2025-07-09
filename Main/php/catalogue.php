@@ -6,6 +6,27 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+// Get search and price filter values
+$search = $_GET['search'] ?? '';
+$minPrice = $_GET['min_price'] ?? '';
+$maxPrice = $_GET['max_price'] ?? '';
+
+// Build filter conditions
+$conditions = ["product_availability = 1"];
+if (!empty($search)) {
+    $conditions[] = "product_name LIKE '%" . mysqli_real_escape_string($con, $search) . "%'";
+}
+if (is_numeric($minPrice)) {
+    $conditions[] = "product_price >= " . (float)$minPrice;
+}
+if (is_numeric($maxPrice)) {
+    $conditions[] = "product_price <= " . (float)$maxPrice;
+}
+
+$whereClause = implode(" AND ", $conditions);
+$sql = "SELECT * FROM products WHERE $whereClause ORDER BY product_name ASC";
+$result = mysqli_query($con, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +47,10 @@ if (!isset($_SESSION['user_id'])) {
       padding: 20px;
       background-color: #3a5a40;
       border-radius: 10px;
+    }
+    .catalogue-container {
+      margin-right: 320px; /* space for sidebar */
+      padding-right: 10px;
     }
     .shop-container {
       display: flex;
@@ -87,20 +112,33 @@ if (!isset($_SESSION['user_id'])) {
       border-radius: 50%;
       object-fit: cover;
     }
+
+    @media (max-width: 991.98px) {
+      .catalogue-container {
+        margin-right: 0;
+        padding-right: 0;
+      }
+      .cart-sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+        margin-top: 30px;
+      }
+    }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3a5a40;">
     <div class="container-fluid">
       <div class="d-flex order-lg-3 position-static position-lg-absolute end-0 me-3 align-items-center">
-    <a href="order_history.php" class="nav-link text-white me-3">
-        <i class="fas fa-clock-rotate-left"></i> <span class="d-none d-md-inline">Order History</span>
-    </a>
-    
-    <a href="logout.php" class="nav-link text-white">
-        <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Logout</span>
-    </a>
-    </div>
+        <a href="order_history.php" class="nav-link text-white me-3">
+          <i class="fas fa-clock-rotate-left"></i> <span class="d-none d-md-inline">Order History</span>
+        </a>
+        <a href="logout.php" class="nav-link text-white">
+          <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Logout</span>
+        </a>
+      </div>
       <button class="navbar-toggler order-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -115,34 +153,57 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </nav>
 
-  <section class="mt-5 mb-5 mx-3 catalogue">
-    <h2 class="text-center text-white mt-3 mb-5">CATALOGUE</h2>
-    <div class="shop-container">
-      <?php
-      $sql = "SELECT * FROM products WHERE product_availability = 1";
-      $result = mysqli_query($con, $sql);
-      while ($row = mysqli_fetch_assoc($result)) {
-        ?>
-        <div class="card">
-          <img src="../../images/<?php echo htmlspecialchars($row['product_image']); ?>" alt="">
-          <div class="card-body">
-            <p class="card-text fw-bold"><?php echo htmlspecialchars($row['product_name']); ?></p>
-            <p>₱<?php echo number_format($row['product_price'], 2); ?></p>
-            <p><small>Stocks Left: <?php echo $row['product_quantity']; ?></small></p>
-            <form action="order.php" method="POST" class="add-to-cart-form">
-              <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
-              <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($row['product_name']); ?>">
-              <input type="hidden" name="product_price" value="<?php echo $row['product_price']; ?>">
-              <input type="hidden" name="product_image" value="../../images/<?php echo htmlspecialchars($row['product_image']); ?>">
-              <button type="submit" class="btn btn-success w-100">Buy Now</button>
-            </form>
-          </div>
+  <div class="catalogue-container">
+    <section class="mt-5 mb-5 mx-3 catalogue">
+      <h2 class="text-center text-white mt-3 mb-4">CATALOGUE</h2>
+
+      <!-- 🔍 Search and Filter Form -->
+      <form method="GET" class="row g-2 mb-4 justify-content-center">
+        <div class="col-md-3">
+          <input type="text" name="search" class="form-control" placeholder="Search product name"
+                 value="<?php echo htmlspecialchars($search); ?>">
         </div>
-        <?php
-      }
-      ?>
-    </div>
-  </section>
+        <div class="col-md-2">
+          <input type="number" name="min_price" class="form-control" placeholder="Min Price" step="0.01"
+                 value="<?php echo htmlspecialchars($minPrice); ?>">
+        </div>
+        <div class="col-md-2">
+          <input type="number" name="max_price" class="form-control" placeholder="Max Price" step="0.01"
+                 value="<?php echo htmlspecialchars($maxPrice); ?>">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success w-100">Filter</button>
+        </div>
+        <div class="col-md-2">
+          <a href="catalogue.php" class="btn btn-secondary w-100">Reset</a>
+        </div>
+      </form>
+
+      <div class="shop-container">
+        <?php if (mysqli_num_rows($result) > 0): ?>
+          <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <div class="card">
+              <img src="../../images/<?php echo htmlspecialchars($row['product_image']); ?>" alt="">
+              <div class="card-body">
+                <p class="card-text fw-bold"><?php echo htmlspecialchars($row['product_name']); ?></p>
+                <p>₱<?php echo number_format($row['product_price'], 2); ?></p>
+                <p><small>Stocks Left: <?php echo $row['product_quantity']; ?></small></p>
+                <form action="order.php" method="POST" class="add-to-cart-form">
+                  <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
+                  <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($row['product_name']); ?>">
+                  <input type="hidden" name="product_price" value="<?php echo $row['product_price']; ?>">
+                  <input type="hidden" name="product_image" value="../../images/<?php echo htmlspecialchars($row['product_image']); ?>">
+                  <button type="submit" class="btn btn-success w-100">Buy Now</button>
+                </form>
+              </div>
+            </div>
+          <?php endwhile; ?>
+        <?php else: ?>
+          <p class="text-white fw-bold">No products match your filter.</p>
+        <?php endif; ?>
+      </div>
+    </section>
+  </div>
 
   <div class="cart-sidebar" id="cart">
     <h4>Your Cart</h4>

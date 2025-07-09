@@ -188,7 +188,7 @@ right: 10%;
             <div class="mt-3 ms-5 me-3 mb-5">
                 <p class="display-6 mt-5 text-white" style="font-weight: bold;">"TO PLANT A GARDEN IS TO BELIEVE IN TOMORROW"</p>
                 <p class="text-white" style="font-size: 2rem;">Looking to add a little life to your home or workspace? A plant is the perfect start. Whether you’re going for calm and cozy or fresh and vibrant, the right plant can transform any space. At Cebu Plant Depot, we make it easy to find healthy, beautiful plants that are ready to grow with you. Start your plant journey today — your green space is just one plant away!  </p>
-                <a href="catalogue.php" class="btn btn-lg active" style="background-color: #dad7cd; border-color: #dad7cd; color: #3a5a40;">Shop Now</a>
+                <a href="./Main/php/index.php" class="btn btn-lg active" style="background-color: #dad7cd; border-color: #dad7cd; color: #3a5a40;">Shop Now</a>
             </div>
         </div>
     </section>

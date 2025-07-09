@@ -134,7 +134,8 @@ include("database.php");
           <div class="login">
             <button type="submit" id="loginbtn">Login</button>
             <small>Don't have an account? <a href="signup.php" id="signupbtn">Sign Up!</a></small>
-          </div>
+            <small><a href="forgot_password.php" id="signupbtn">Forgot Password?</a></small>
+        </div>
           <?php if (!empty($error)): ?>
             <div>
               <small id="error"><?php echo htmlspecialchars($error); ?></small>

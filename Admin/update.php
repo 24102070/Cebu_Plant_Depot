@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 
 if (!isset($_GET['id'])) {
-    header("Location: main.php");
+    header("Location: product_list.php");
     exit();
 }
 
@@ -27,7 +27,7 @@ mysqli_stmt_close($stmt);
 
 
 if (!$product) {
-    header("Location: main.php");
+    header("Location: product_list.php");
     exit();
 }
 
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-    header("Location: main.php");
+    header("Location: product_list.php");
     exit();
 }
 ?>
