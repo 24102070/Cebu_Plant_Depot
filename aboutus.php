@@ -47,35 +47,38 @@ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 </ul>
             </div>
             <div>
-                <a href="home.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
+                <a href="index.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
             </div>
         </div>
     </nav>
 
     <section>
-        <div class="d-flex flex-lg-row flex-column mx-5 mt-5 p-4">
-            <div class="me-4">
-                <img src="./images/about.jpg" class="" style="height: auto; width: 20rem; border-radius: 10px;">
-            </div>
-            <div class="mt-4 ms-3">
-                <h1 class="fw-bold display-3">About Cebu Plant Depot</h1>
-                <p class="mt-3" style="font-size: 1.8rem;">At Cebu Plant Depot, we believe that plants bring life, joy, and a sense of peace to every space. What started as a small passion project in Cebu quickly grew into a trusted plant shop for fellow plant lovers. We specialize in offering healthy, beautiful, and carefully selected plants — perfect for homes, offices, or gifts.</p>
+        <div class="container">
+            <div class="d-flex flex-lg-row flex-column justify-content-center align-items-center mt-5 p-4">
+                <div class="me-4 d-flex justify-content-center">
+                    <img src="./images/about.jpg" class="align-self-center" style="height: auto; width: 20rem; border-radius: 10px;">
+                </div>
+                <div class="mt-4 ms-5 me-5">
+                    <h1 class="fw-bold display-3">About Cebu Plant Depot</h1>
+                    <p class="mt-3" style="font-size: 1.8rem;">At Cebu Plant Depot, we believe that plants bring life, joy, and a sense of peace to every space. What started as a small passion project in Cebu quickly grew into a trusted plant shop for fellow plant lovers. We specialize in offering healthy, beautiful, and carefully selected plants — perfect for homes, offices, or gifts.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <section>
-        <div class="d-flex flex-lg-row flex-column mx-5 mt-5 p-4">
-            <div class="mt-4 d-flex justify-content-center mx-5">
+        <div class="container">
+            <div class="d-flex flex-lg-row flex-column justify-content-center align-items-center mt-5 p-4">
+                <div class="mt-4 d-flex justify-content-center">
                 <img src="./images/owner.jpg" class="mt-5" style="height: 15rem; width: 15rem; border-radius: 50%;">
             </div>
-            <div class="mt-4">
+            <div class="mt-4 ms-5 me-5">
                 <h1 class="fw-bold display-4">Melody Good Diano</h1>
                 <p class="mt-3" style="font-size: 1.5rem;">Hi! I’m Melody, the owner of Cebu Plant Depot. I’ve always loved plants — they bring life and calm to any space. What started as a small hobby turned into a way to share that love with others.
 
                     I personally choose and care for the plants we offer, making sure they’re healthy and ready for their new homes. I hope you find something here that brings joy to your space, just like plants have brought to mine.</p>
-                <p class="fw-bold" style="font-size: 1.2rem;">Contact: 09639278793</p>
-                <p class="fw-bold" style="font-size: 1.2rem;">Email: <a href="#" style="color: #000;">melodydiano@yahoo.com</a></p>
+                <!-- <p class="fw-bold" style="font-size: 1.2rem;">Contact: 09639278793</p>
+                <p class="fw-bold" style="font-size: 1.2rem;">Email: <a href="#" style="color: #000;">melodydiano@yahoo.com</a></p> -->
             </div>
         </div>
     </section>

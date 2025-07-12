@@ -60,20 +60,26 @@ display: block;
 #next, #prev{
 
 position: absolute;
-top: 30%;
-left: 10%;
+top: 50%;
+transform: translateY(-50%);
 background-color: transparent;
 border-style: none;
 font-size: 5rem;
 color: white;
 cursor: pointer;
+z-index: 10;
+
+}
+
+#prev{
+
+left: 5%;
 
 }
 
 #next{
 
-left: unset;
-right: 10%;
+right: 5%;
 
 }
 </style>
@@ -104,7 +110,7 @@ right: 10%;
                 </ul>
             </div>
             <div>
-                <a href="home.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
+                <a href="index.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
             </div>
         </div>
     </nav>
@@ -121,11 +127,11 @@ right: 10%;
         </div>
     </section>
 
-    <section class="mt-5 p-4" style="background-color: #3a5a40;">
+    <section class="mt-5 p-4" style="background-image: linear-gradient(to bottom right, #344e41, #3a5a40, #588157, #588157);">
         <div class="text-center mt-3">
-            <p class="display-2" style="color: #ffffff; font-weight: 400;">New Arrivals</p>
+            <p class="display-2 text-center" style="color: #ffffff; font-weight: 400;">New Arrivals</p>
         </div>
-        <div class="container d-flex flex-wrap justify-content-center mb-3 mt-3 gap-4">
+        <div class="container d-flex justify-content-center mb-3 mt-3 position-relative" style="overflow: hidden;">
             <div class="elements card p-3 ms-2 me-2 mt-2" style="width: 15rem;">
                 <img src="./images/1.jpg" class="card-img-top" alt=".">
                 <div class="card-body">
@@ -180,7 +186,7 @@ right: 10%;
         </div>
     </section>
 
-    <section class="mt-5 p-4" style="background-color: #3a5a40;">
+    <section class="mt-5 p-4" style="background-image: linear-gradient(to bottom right, #344e41, #3a5a40, #588157, #588157);">
         <div class="d-flex">
             <div class="d-none d-lg-block">
                 <img src="./images/placeholder.jpg" class="" style="height: auto; width: 25rem; border-radius: 10px;">
