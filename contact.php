@@ -15,9 +15,144 @@ body{
 background-color: #dad7cd;
 overflow-x: hidden;
 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+text-align: center;
 
 }
 
+*{
+
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+
+}
+
+body{
+
+font-family: Arial, sans-serif;
+background-color: #dad7cd;
+color: #333;
+
+}
+
+.container{
+
+display: flex;
+flex-wrap: wrap;
+min-height: 100vh;
+margin-top: 20px;
+margin-bottom: 20px;
+border-radius: 50px;
+
+}
+
+.left-panel{
+
+background-image: linear-gradient(to bottom right, #344e41, #3a5a40, #588157, #588157);
+flex: 1;
+min-width: 300px;
+padding: 60px 30px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+border-top-left-radius: 20px;
+border-bottom-left-radius: 20px;
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+
+}
+
+.left-panel img{
+
+width: 100px;
+margin-bottom: 20px;
+
+}
+
+.left-panel h1{
+
+font-size: 28px;
+color: #3e8e41;
+
+}
+
+.left-panel p{
+
+font-size: 16px;
+margin-top: 10px;
+color: #555;
+
+}
+
+.right-panel{
+
+flex: 2;
+min-width: 400px;
+padding: 40px 40px 60px;
+background-color: #ffffff;
+border-top-right-radius: 20px;
+border-bottom-right-radius: 20px;
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+
+}
+
+h2{
+
+color: #3e8e41;
+margin-bottom: 10px;
+
+}
+
+.section{
+
+margin-bottom: 40px;
+
+}
+
+button{
+
+background-color: #3e8e41;
+color: white;
+border: none;
+padding: 12px 25px;
+font-size: 16px;
+border-radius: 8px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+
+}
+
+
+iframe{
+
+width: 100%;
+height: 300px;
+border: 0;
+border-radius: 8px;
+
+}
+
+a{
+      
+color: #3e8e41;
+text-decoration: none;
+
+}
+
+a:hover{
+
+text-decoration: underline;
+
+}
+
+@media (max-width: 991px) {
+
+    .container {flex-direction: column;}
+    .right-panel {padding: 30px 20px; border-top-right-radius: 0px; border-bottom-left-radius: 20px; /*box-shadow: 0px -2px 30px black;*/}
+    .left-panel {padding: 40px 20px; border-bottom-left-radius: 0px; border-top-right-radius: 20px; /*box-shadow: 0px 2px 30px black;*/}
+
+}
 </style>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3a5a40;">
@@ -46,82 +181,43 @@ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 </ul>
             </div>
             <div>
-                <a href="home.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
+                <a href="index.php"><img src="./images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
             </div>
         </div>
     </nav>
 
-    <section class="mt-5">
-        <p class="display-5 text-center">We Would Love to Hear From You!</p>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                  <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST">
-                    <div class="d-flex flex-lg-row flex-column gap-3">
-                        <div class="form-floating flex-grow-1">
-                            <input type="text" class="form-control" name="name" id="floatingInput" placeholder="Eg. Juan Dela L. Cruz">
-                            <label for="floatingInput">Name</label>
-                        </div>
-                        <div class="form-floating flex-grow-1">
-                            <input type="email" class="form-control" name="email" id="floatingEmail" placeholder="name@example.com">
-                            <label for="floatingEmail">Email</label>
-                        </div>
-                    </div>
-                    <div class="form-floating mt-3">
-                        <textarea class="form-control" id="floatingMessage" name="content" placeholder="Message.." style="height: 150px"></textarea>
-                        <label for="floatingMessage">Message</label>
-                    </div>
-                    <div class="text-center mt-3">
-                        <button type="submit" name="submit" value="Submit" class="bg-success fw-bold" style="color: white; padding: 10px; border-radius: 10px; border-style: none;">Submit</button>
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <br><br><br>
-    <section class="mt-3">
-        <h1 class="display-5 text-center">You Can Also Contact us by:</h1>
-        <div class="text-center">
-            <div>
-                <p style="font-size: 1.5rem;">Phone Number: 09639278793</p>
-                <p style="font-size: 1.5rem;">Facebook: <a href="https://www.facebook.com/share/g/1Yw9N3MKAs/" target="_blank" style="color: black;">Cebu Plant Depot</a></p>
-            </div>
-        </div>
-    </section>
-    <br><br><br>
+<div class="container">
+    <div class="left-panel">
+        <img src="./images/logowhite.png" alt="Plant Logo" style="width: 300px; padding: 5px;">
+        <p style='color: white; font-size: 20px;'>"To plant a garden is to believe in tomorrow"</p>
+    </div>
 
-    <footer>
-      <div class="footer text-center p-2">
-        <p class="fw-bold mt-3">© 2025 Cebu Plant Depot.</p>
-      </div>
-    </footer>
+    <div class="right-panel">
+        <div class="section">
+            <h2>📍 Visit Us</h2>
+        <div class="info">
+            <p><strong>Address:</strong> Cebu Plant Depot, Cebu City, Philippines</p>
+            <p><strong>Hours:</strong> Mon–Sat: 8:00 AM – 6:00 PM</p>
+            <p><strong>Sunday:</strong> Closed</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📞 Contact Info</h2>
+        <div class="info">
+            <p><strong>Phone:</strong> 09639278793</p>
+            <p><strong>Email:</strong> melodydiano@yahoo.com</p>
+            <p><strong>Facebook:</strong> <a href="https://www.facebook.com/share/g/1Yw9N3MKAs/" target="_blank">Cebu Plant Depot</a></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🗺️ Find Us on the Map</h2>
+        <iframe src="https://www.google.com/maps?q=Cebu%20City&output=embed" allowfullscreenloading="lazy"></iframe>
+    </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
-<?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-
-$email = FILTER_INPUT(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-$name = FILTER_INPUT(INPUT_POST, "name", FILTER_SANITIZE_SPECIAL_CHARS);
-$content = FILTER_INPUT(INPUT_POST, "content", FILTER_SANITIZE_SPECIAL_CHARS);
-
-// echo "$name $email $content";
-
-if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-
-  $to = "dustin.jb09@gmail.com";
-  $subject = "Website Feedback";
-  $message = "From: $name\n\nMessage:\n$content";
-  $headers = "From: $email";
-
-  mail($to, $subject, $message, $headers);
-
-}
-
-}
-
-?>
