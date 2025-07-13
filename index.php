@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="./css/bootstrap.css">
 </head>
 <style>
-
+  ::-webkit-scrollbar { display: none; } 
+  * { 
+    -ms-overflow-style: none;  
+    scrollbar-width: none;     
+  }
 body{
 
 background-color: #dad7cd;

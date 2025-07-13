@@ -1,6 +1,43 @@
 <?php
-
+session_start();
 include("database.php");
+
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
+  $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
+
+  $sql = "SELECT * FROM users WHERE email = ?";
+  $stmt = mysqli_prepare($con, $sql);
+  mysqli_stmt_bind_param($stmt, "s", $email);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+
+  if ($row = mysqli_fetch_assoc($result)) {
+    if (password_verify($password, $row['password'])) {
+
+      $_SESSION["user_id"] = $row['id'];
+      $_SESSION["email"] = $row['email'];
+      $_SESSION["role"] = $row['role'];
+      $_SESSION["fname"] = $row['fname'];
+
+      if ($row['role'] === 'admin') {
+        header("Location: ../../Admin/main.php");
+      } else {
+        header("Location: catalogue.php");
+      }
+      exit;
+    } else {
+      $error = "Incorrect password.";
+    }
+  } else {
+    $error = "Account not found.";
+  }
+
+  mysqli_stmt_close($stmt);
+  mysqli_close($con);
+}
 
 ?>
 <!DOCTYPE html>
@@ -12,7 +49,13 @@ include("database.php");
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <style>
+      ::-webkit-scrollbar { display: none; } 
+  * { 
+    -ms-overflow-style: none;  
+    scrollbar-width: none;     
+  }
     body {
       background: linear-gradient(to right, #3a5a40, #588157);
       font-family: 'Segoe UI', sans-serif;
@@ -118,6 +161,35 @@ include("database.php");
   </style>
 </head>
 <body>
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3a5a40;">
+        <div class="container-fluid">
+            <div class="d-flex order-lg-3 position-static position-lg-absolute end-0 me-3">
+                <a href="#" class="nav-link text-white me-3">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+                <a href="signup.php" class="nav-link text-white">Signup</a>
+            </div>
+            <button class="navbar-toggler order-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse order-2 order-lg-1" id="navbarNav" style="align-content: left;">
+                <ul class="navbar-nav mx-auto ">
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="../../index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="../../aboutus.php">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="../../contact.php">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <a href="index.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
+            </div>
+        </div>
+    </nav>
 
    <div class="main">
     <div class="container-custom row">
@@ -127,14 +199,15 @@ include("database.php");
             <input type="email" class="form-control" id="floatingInput" name="email" placeholder="Eg. Juan Dela L. Cruz" required>
             <label for="floatingInput">Email</label>
           </div>
-          <div class="form-floating">
+          <div class="form-floating position-relative">
             <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Enter your password" required>
             <label for="floatingPassword">Password</label>
+            <i class="bi bi-eye-slash-fill toggle-password" id="togglePassword" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
           </div>
+          <small><a href="forgot_password.php" id="signupbtn">Forgot Password?</a></small>
           <div class="login">
             <button type="submit" id="loginbtn">Login</button>
             <small>Don't have an account? <a href="signup.php" id="signupbtn">Sign Up!</a></small>
-            <small><a href="forgot_password.php" id="signupbtn">Forgot Password?</a></small>
         </div>
           <?php if (!empty($error)): ?>
             <div>
@@ -150,48 +223,18 @@ include("database.php");
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const togglePassword = document.getElementById('togglePassword');
+      const password = document.getElementById('floatingPassword');
+      togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('bi-eye-fill');
+        this.classList.toggle('bi-eye-slash-fill');
+      });
+    });
+  </script>
 </body>
 </body>
 </html>
-
-<?php
-include("database.php");
-session_start();
-
-$error = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-  $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
-
-  $sql = "SELECT * FROM users WHERE email = ?";
-  $stmt = mysqli_prepare($con, $sql);
-  mysqli_stmt_bind_param($stmt, "s", $email);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-
-  if ($row = mysqli_fetch_assoc($result)) {
-    if (password_verify($password, $row['password'])) {
-
-      $_SESSION["user_id"] = $row['id'];
-      $_SESSION["email"] = $row['email'];
-      $_SESSION["role"] = $row['role'];
-      $_SESSION["fname"] = $row['fname'];
-
-      if ($row['role'] === 'admin') {
-        header("Location: ../../Admin/main.php");
-      } else {
-        header("Location: catalogue.php");
-      }
-      exit;
-    } else {
-      $error = "Incorrect password.";
-    }
-  } else {
-    $error = "Account not found.";
-  }
-
-  mysqli_stmt_close($stmt);
-  mysqli_close($con);
-}
-?>

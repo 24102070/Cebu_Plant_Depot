@@ -74,6 +74,7 @@ for ($i = 5; $i >= 0; $i--) {
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -83,40 +84,125 @@ for ($i = 5; $i >= 0; $i--) {
     .main {
       display: flex;
       min-height: 100vh;
-      padding: 30px;
+      padding: 20px;
     }
     .sidebar {
-      width: 220px;
+      width: 250px;
       background-color: #344e41;
       padding: 20px;
       border-radius: 10px;
       color: white;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
     }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .sidebar-nav {
+      flex-grow: 1;
+    }
+    
     .sidebar a {
-      display: block;
-      padding: 10px;
-      background-color: #588157;
-      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      margin: 8px 0;
       border-radius: 8px;
       color: white;
       text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .sidebar a:hover {
-      background-color: #6a994e;
+      background-color: #8ab372ff;
     }
+
+    .sidebar a.dashboard-btn {
+      background-color: #8ab372ff;
+    }
+  
+    .sidebar a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar .sidebar-logo a{
+      border: none;
+    }
+
+    .sidebar .sidebar-logo a:hover{
+      border: none;
+      background-color: transparent;
+    }
+
+    .logout-container {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
     .content {
       flex-grow: 1;
       background-color: #dad7cd;
-      margin-left: 30px;
-      padding: 20px;
+      margin-left: 20px;
+      padding: 25px;
       border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      overflow-y: auto;
+      max-height: calc(100vh - 40px);
     }
     .card {
       background-color: white;
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border: none;
+    }
+    .card-header {
+      background: transparent;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .card-header i {
+      margin-right: 10px;
+      color: #588157;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+    }
+    .stat-card h3 {
+      font-size: 2rem;
+      margin: 10px 0;
+      color: #344e41;
+    }
+    .stat-card h5 {
+      color: #6c757d;
+      font-size: 1rem;
+    }
+    .stat-card .icon-wrapper {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: rgba(88,129,87,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+    }
+    .stat-card .icon-wrapper i {
+      color: #588157;
+      font-size: 1.2rem;
     }
     .low-stock {
       background-color: #fff3cd !important;
@@ -124,113 +210,286 @@ for ($i = 5; $i >= 0; $i--) {
     .out-of-stock {
       background-color: #f8d7da !important;
     }
+    .in-stock {
+      background-color: #d1e7dd !important;
+    }
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-out {
+      background-color: #f8d7da;
+      color: #842029;
+    }
+    .status-low {
+      background-color: #fff3cd;
+      color: #664d03;
+    }
+    .status-good {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
     #monthlyChart {
-  width: 100%;
-  max-width: 750px;  
-  height: 350px;      
-  margin: auto;
-}
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      margin: auto;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .table th {
+      background-color: #344e41;
+      color: white;
+    }
+    .table-hover tbody tr:hover {
+      background-color: rgba(88,129,87,0.1);
+    }
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    .welcome-message h2 {
+      margin-bottom: 5px;
+      color: #344e41;
+    }
+    .welcome-message p {
+      color: #6c757d;
+      margin: 0;
+    }
+    .logout-btn {
+      background-color: #0f5132;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+    .logout-btn:hover {
+      background-color: #66a67eff;
+    }
+    .logout-btn i {
+      margin-right: 5px;
+    }
+    .top-product-card {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+    }
+    .top-product-icon {
+      width: 50px;
+      height: 50px;
+      background-color: rgba(88,129,87,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    .top-product-icon i {
+      color: #588157;
+      font-size: 1.5rem;
+    }
+    .top-product-info h5 {
+      margin-bottom: 5px;
+      color: #344e41;
+    }
+    .top-product-info p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+      #monthlyChart {
+      width: 100%;
+      height: 300px;
+      margin: auto;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px;
+    }
+    .left-column {
+      padding-right: 20px;
+    }
+    .right-column {
+      padding-left: 10px;
+    }
+    .content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .content {
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+  }
   </style>
 </head>
 <body>
 <div class="main">
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h4>Admin Panel</h4>
-    <a href="main.php">Dashboard</a>
-    <a href="product_list.php">Product List</a>
-    <a href="create.php">Add Product</a>
-    <a href="orders.php">Manage Orders</a>
-    <a href="../index.php">Logout</a>
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <a href="main.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
+      </div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <a href="main.php" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="product_list.php" class="product-btn"><i class="fas fa-list"></i> Product List</a>
+      <a href="create.php" class="create-btn"><i class="fas fa-plus-circle"></i> Add Product</a>
+      <a href="orders.php" class="orders-btn"><i class="fas fa-shopping-cart"></i> Manage Orders</a>
+    </div>
+    
+    <div class="logout-container">
+      <a href="../index.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
   </div>
 
   <div class="content">
-    <h2 class="mb-4">📊 Sales Summary & Inventory Overview</h2>
+    <div class="welcome-header">
+      <div class="welcome-message">
+        <h2><i class="fas fa-chart-line"></i> Sales Dashboard</h2>
+        <p>Overview of your store's performance</p>
+      </div>
+      <a href="../index.php" class="btn logout-btn text-white"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
 
     <div class="row mb-4">
       <div class="col-md-4">
-        <div class="card">
+        <div class="card stat-card">
+          <div class="icon-wrapper">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
           <h5>Total Sales (Delivered)</h5>
           <h3>₱<?php echo number_format($totalSales, 2); ?></h3>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card">
+        <div class="card stat-card">
+          <div class="icon-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
           <h5>Sales This Month</h5>
           <h3>₱<?php echo number_format($monthlySales, 2); ?></h3>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card">
-          <h5>Total Delivered Orders</h5>
+        <div class="card stat-card">
+          <div class="icon-wrapper">
+            <i class="fas fa-truck"></i>
+          </div>
+          <h5>Delivered Orders</h5>
           <h3><?php echo $totalDelivered; ?></h3>
         </div>
       </div>
     </div>
 
-    <div class="card mb-4">
-      <h5>📈 Monthly Sales Chart</h5>
-      <canvas id="monthlyChart"></canvas>
-    </div>
+    <div class="dashboard-grid">
+      <!-- Left Column -->
+      <div class="left-column">
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-boxes"></i>
+            <h5 class="mb-0">Inventory Status</h5>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php mysqli_data_seek($lowStockResult, 0); while ($row = mysqli_fetch_assoc($lowStockResult)):
+                $qty = $row['product_quantity'];
+                $status = ($qty == 0) ? 'Out of Stock' : (($qty < 5) ? 'Low Stock' : 'In Stock');
+                $statusClass = ($qty == 0) ? 'status-out' : (($qty < 5) ? 'status-low' : 'status-good');
+                $rowClass = ($qty == 0) ? 'out-of-stock' : (($qty < 5) ? 'low-stock' : 'in-stock');
+              ?>
+                <tr class="<?php echo $rowClass; ?>">
+                  <td><?php echo htmlspecialchars($row['product_name']); ?></td>
+                  <td><?php echo $qty; ?></td>
+                  <td><span class="status-badge <?php echo $statusClass; ?>"><?php echo $status; ?></span></td>
+                </tr>
+              <?php endwhile; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-    <div class="card mb-4">
-      <h5>📦 Inventory Status (Sorted by Quantity)</h5>
-      <table class="table table-bordered table-hover bg-white">
-        <thead class="table-light">
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php mysqli_data_seek($lowStockResult, 0); while ($row = mysqli_fetch_assoc($lowStockResult)):
-          $qty = $row['product_quantity'];
-          $status = ($qty == 0) ? 'Out of Stock' : (($qty < 5) ? 'Low Stock' : 'In Stock');
-          $rowClass = ($qty == 0) ? 'out-of-stock' : (($qty < 5) ? 'low-stock' : '');
-        ?>
-          <tr class="<?php echo $rowClass; ?>">
-            <td><?php echo htmlspecialchars($row['product_name']); ?></td>
-            <td><?php echo $qty; ?></td>
-            <td><strong><?php echo $status; ?></strong></td>
-          </tr>
-        <?php endwhile; ?>
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="card mb-4">
-      <h5>🏆 Most Purchased Product</h5>
-      <p><strong><?php echo $mostPurchased ? $mostPurchased['product_name'] . " (Total: " . $mostPurchased['total_quantity'] . ")" : "No Data"; ?></strong></p>
-    </div>
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-clock"></i>
+            <h5 class="mb-0">Recent Orders</h5>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php mysqli_data_seek($recentOrdersResult, 0); while ($row = mysqli_fetch_assoc($recentOrdersResult)): ?>
+                <tr>
+                  <td><?php echo $row['order_id']; ?></td>
+                  <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
+                  <td>
+                    <span class="badge 
+                      <?php echo $row['status'] == 'Delivered' ? 'bg-success' : 
+                            ($row['status'] == 'Processing' ? 'bg-warning text-dark' : 'bg-info'); ?>">
+                      <?php echo $row['status']; ?>
+                    </span>
+                  </td>
+                  <td>₱<?php echo number_format($row['total_amount'], 2); ?></td>
+                  <td><?php echo date("M j, Y H:i", strtotime($row['order_date'])); ?></td>
+                </tr>
+              <?php endwhile; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-    <div class="card mb-4">
-      <h5>🆕 Top 5 Most Recent Orders</h5>
-      <table class="table table-bordered bg-white">
-        <thead class="table-light">
-          <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Status</th>
-            <th>Total</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php while ($row = mysqli_fetch_assoc($recentOrdersResult)): ?>
-          <tr>
-            <td><?php echo $row['order_id']; ?></td>
-            <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
-            <td><?php echo $row['status']; ?></td>
-            <td>₱<?php echo number_format($row['total_amount'], 2); ?></td>
-            <td><?php echo date("M j, Y H:i", strtotime($row['order_date'])); ?></td>
-          </tr>
-        <?php endwhile; ?>
-        </tbody>
-      </table>
+      <!-- Right Column -->
+      <div class="right-column">
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-chart-bar"></i>
+            <h5 class="mb-0">Monthly Sales Chart</h5>
+          </div>
+          <canvas id="monthlyChart"></canvas>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-trophy"></i>
+            <h5 class="mb-0">Top Product</h5>
+          </div>
+          <div class="top-product-card">
+            <div class="top-product-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="top-product-info">
+              <h5><?php echo $mostPurchased ? htmlspecialchars($mostPurchased['product_name']) : "No Data"; ?></h5>
+              <p>Total Sold: <?php echo $mostPurchased ? $mostPurchased['total_quantity'] : "0"; ?></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    
-
   </div>
 </div>
 
