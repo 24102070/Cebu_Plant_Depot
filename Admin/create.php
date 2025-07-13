@@ -1,3 +1,35 @@
+<?php
+include("../Main/php/database.php");
+session_start();
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../Main/php/index.php");
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = trim($_POST['product_name']);
+    $price = floatval($_POST['product_price']);
+    $availability = isset($_POST['product_availability']) ? 1 : 0;
+    $quantity = intval($_POST['product_quantity']);
+
+    $imgName = $_FILES['product_image']['name'];
+    $imgTmp = $_FILES['product_image']['tmp_name'];
+    $uploadPath = "../images/" . basename($imgName);
+    move_uploaded_file($imgTmp, $uploadPath);
+
+    $sql = "INSERT INTO products (product_name, product_image, product_price, product_availability, product_quantity)
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "ssdii", $name, $imgName, $price, $availability, $quantity);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("Location: product_list.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
