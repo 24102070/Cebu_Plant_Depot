@@ -53,186 +53,361 @@ if (!empty($startDate) && !empty($endDate)) {
 }
 
 $ordersRes = mysqli_query($con, "
-    SELECT o.*, u.phoneNumber, u.address 
+    SELECT DISTINCT o.*, u.phoneNumber, u.address 
     FROM orders o 
     LEFT JOIN users u ON CONCAT(u.fname, ' ', u.lname) = o.customer_name 
     $whereSQL 
     ORDER BY o.order_date DESC
 ");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Admin — Manage Orders</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* HIDE ALL SCROLLBARS */
+    ::-webkit-scrollbar { display: none; }
+    * { 
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     body {
-        background: linear-gradient(to right, #3a5a40, #588157);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #3a5a40, #588157);
+      font-family: 'Segoe UI', sans-serif;
     }
+    
     .main {
-        display: flex;
-        min-height: 100vh;
-        padding: 30px;
+      display: flex;
+      min-height: 100vh;
+      padding: 20px;
     }
+    
     .sidebar {
-        width: 220px;
-        background-color: #344e41;
-        padding: 20px;
-        border-radius: 10px;
-        color: white;
-        height: fit-content;
+      width: 250px;
+      background-color: #344e41;
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
     }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .sidebar-nav {
+      flex-grow: 1;
+    }
+    
     .sidebar a {
-        display: block;
-        padding: 10px 15px;
-        margin: 10px 0;
-        background-color: #588157;
-        border-radius: 8px;
-        color: white;
-        text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .sidebar a:hover {
-        background-color: #6a994e;
+      background-color: #8ab372ff;
     }
+
+    .sidebar a.orders-btn {
+      background-color: #8ab372ff;
+    }
+    .sidebar a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar .sidebar-logo a{
+      border: none;
+    }
+    .sidebar .sidebar-logo a:hover{
+      border: none;
+      background-color: transparent;
+    }
+    
+    .logout-container {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Content */
     .content {
-        flex-grow: 1;
-        background-color: #dad7cd;
-        margin-left: 30px;
-        padding: 20px;
-        border-radius: 10px;
+      flex-grow: 1;
+      background-color: #dad7cd;
+      margin-left: 20px;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-    table th, table td {
-        vertical-align: middle !important;
+    
+    /* Welcome Header */
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
     }
-    ul {
-        padding-left: 20px;
-        margin: 0;
+    
+    .welcome-message h2 {
+      margin-bottom: 5px;
+      color: #344e41;
     }
-    .bg-item-row {
-        background-color: #f9f9f9;
+    
+    .welcome-message p {
+      color: #6c757d;
+      margin: 0;
     }
+    
+    .logout-btn {
+      background-color: #0f5132;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logout-btn:hover {
+      background-color: #66a67eff;
+    }
+    
+    .logout-btn i {
+      margin-right: 5px;
+    }
+    
+    /* Table Styling */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    .table {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    
+    .table th {
+      background-color: #344e41;
+      color: white;
+    }
+    
+    .table-hover tbody tr:hover {
+      background-color: rgba(88,129,87,0.1);
+    }
+    
+    /* Status Badges */
+    .badge-pending {
+      background-color: #ffc107;
+      color: #000;
+    }
+    
+    .badge-ontheway {
+      background-color: #0dcaf0;
+      color: #000;
+    }
+    
+    .badge-delivered {
+      background-color: #198754;
+      color: #fff;
+    }
+    
+    .badge-rejected {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    
+    /* Filter Form */
     .filter-form {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-  </style>
-  <script>
-    function toggleItems(orderId) {
-      const row = document.getElementById('items-' + orderId);
-      const btn = document.getElementById('toggle-btn-' + orderId);
-      if (row.style.display === 'none') {
-        row.style.display = 'table-row';
-        btn.textContent = 'Hide Items';
-      } else {
-        row.style.display = 'none';
-        btn.textContent = 'View Items';
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .main {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        margin-bottom: 20px;
+      }
+      .content {
+        margin-left: 0;
       }
     }
-  </script>
+  </style>
 </head>
 <body>
-  <div class="main">
-    <div class="sidebar">
-      <h4>Admin Panel</h4>
-      <a href="main.php">Dashboard</a>
-      <a href="?">All Orders</a>
-      <a href="?filter=Pending">Pending</a>
-      <a href="?filter=On the Way">On the Way</a>
-      <a href="?filter=Delivered">Delivered</a>
-      <a href="?filter=Rejected">Rejected</a>
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <a href="main.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
+      </div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <a href="main.php" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="product_list.php" class="product-btn"><i class="fas fa-list"></i> Product List</a>
+      <a href="create.php" class="create-btn"><i class="fas fa-plus-circle"></i> Add Product</a>
+      <a href="orders.php" class="orders-btn"><i class="fas fa-shopping-cart"></i> Manage Orders</a>
+    </div>
+    
+    <div class="logout-container">
+      <a href="../index.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+      <div class="welcome-message">
+        <h2><i class="fas fa-shopping-cart"></i> Manage Orders</h2>
+        <p>View and update order status</p>
+      </div>
+      <a href="../index.php" class="btn logout-btn text-white"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
-    <div class="content">
-      <h2 class="mb-4">🛠️ Manage Orders</h2>
+    <?php if ($message): ?>
+      <div class="alert alert-success mb-4"><?php echo htmlspecialchars($message); ?></div>
+    <?php endif; ?>
 
-      <?php if ($message): ?>
-        <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
-      <?php endif; ?>
-
-      <?php if ($statusFilter): ?>
-        <h5>Viewing: <strong><?php echo htmlspecialchars($statusFilter); ?></strong> orders</h5>
-      <?php endif; ?>
-
-      <form method="GET" class="filter-form">
-        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($statusFilter); ?>">
-        <label>From: <input type="date" name="start_date" value="<?php echo htmlspecialchars($startDate); ?>" class="form-control"></label>
-        <label>To: <input type="date" name="end_date" value="<?php echo htmlspecialchars($endDate); ?>" class="form-control"></label>
-        <button type="submit" class="btn btn-dark">Filter</button>
-        <a href="manage_orders.php?filter=<?php echo urlencode($statusFilter); ?>" class="btn btn-secondary">Clear</a>
+    <!-- Filter Form -->
+    <div class="filter-form">
+      <form method="GET" class="row g-3">
+        <div class="col-md-3">
+          <select class="form-select" name="filter">
+            <option value="">All Statuses</option>
+            <option value="Pending" <?= $statusFilter === 'Pending' ? 'selected' : '' ?>>Pending</option>
+            <option value="On the Way" <?= $statusFilter === 'On the Way' ? 'selected' : '' ?>>On the Way</option>
+            <option value="Delivered" <?= $statusFilter === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
+            <option value="Rejected" <?= $statusFilter === 'Rejected' ? 'selected' : '' ?>>Rejected</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <input type="date" name="start_date" class="form-control" value="<?= htmlspecialchars($startDate) ?>" placeholder="Start Date">
+        </div>
+        <div class="col-md-3">
+          <input type="date" name="end_date" class="form-control" value="<?= htmlspecialchars($endDate) ?>" placeholder="End Date">
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-success w-100">Filter</button>
+        </div>
       </form>
+    </div>
 
-      <table class="table table-bordered bg-white">
-        <thead class="table-light">
+    <!-- Orders Table -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
           <tr>
             <th>Order #</th>
             <th>Customer</th>
             <th>Phone</th>
-            <th>Address</th>
             <th>Date</th>
             <th>Total (₱)</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
         <?php while ($order = mysqli_fetch_assoc($ordersRes)): ?>
           <tr>
-            <td><?php echo $order['order_id']; ?></td>
-            <td><?php echo htmlspecialchars($order['customer_name']); ?></td>
-            <td><?php echo htmlspecialchars($order['phoneNumber'] ?? 'N/A'); ?></td>
-            <td><?php echo htmlspecialchars($order['address'] ?? 'N/A'); ?></td>
-            <td><?php echo date("M j, Y H:i", strtotime($order['order_date'])); ?></td>
-            <td><?php echo number_format($order['total_amount'], 2); ?></td>
-            <td><strong><?php echo $order['status']; ?></strong></td>
+            <td><?= $order['order_id'] ?></td>
+            <td><?= htmlspecialchars($order['customer_name']) ?></td>
+            <td><?= htmlspecialchars($order['phoneNumber'] ?? 'N/A') ?></td>
+            <td><?= date("M j, Y H:i", strtotime($order['order_date'])) ?></td>
+            <td>₱<?= number_format($order['total_amount'], 2) ?></td>
+            <td>
+              <?php 
+                $statusClass = strtolower(str_replace(' ', '', $order['status']));
+                echo '<span class="badge badge-'.$statusClass.'">'.$order['status'].'</span>';
+              ?>
+            </td>
             <td>
               <?php if ($order['status'] === 'Pending'): ?>
                 <form method="POST" class="d-inline">
-                  <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                  <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                   <input type="hidden" name="new_status" value="On the Way">
-                  <button class="btn btn-success btn-sm mt-1">On the Way</button>
+                  <button class="btn btn-success btn-sm">Ship</button>
                 </form>
                 <form method="POST" class="d-inline">
-                  <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                  <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                   <input type="hidden" name="new_status" value="Rejected">
-                  <button class="btn btn-danger btn-sm mt-1">Reject</button>
+                  <button class="btn btn-danger btn-sm">Reject</button>
                 </form>
               <?php elseif ($order['status'] === 'On the Way'): ?>
                 <form method="POST" class="d-inline">
-                  <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                  <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                   <input type="hidden" name="new_status" value="Delivered">
-                  <button class="btn btn-primary btn-sm mt-1">Delivered</button>
+                  <button class="btn btn-primary btn-sm">Delivered</button>
                 </form>
-              <?php else: ?>
-                <em class="d-block mt-1">N/A</em>
-              <?php endif; ?><br><br>
-              <button class="btn btn-outline-secondary btn-sm mb-1" id="toggle-btn-<?php echo $order['order_id']; ?>" onclick="toggleItems(<?php echo $order['order_id']; ?>)">View Items</button>
+              <?php endif; ?>
+              <button class="btn btn-info btn-sm" onclick="toggleItems(<?= $order['order_id'] ?>)">Details</button>
             </td>
           </tr>
-
-          <tr class="bg-item-row" id="items-<?php echo $order['order_id']; ?>" style="display: none;">
-            <td colspan="8">
-              <strong>Order Items:</strong>
-              <ul class="mb-0">
-                <?php
-                  $orderId = $order['order_id'];
-                  $itemsRes = mysqli_query($con, "
-                    SELECT oi.quantity, (oi.quantity * oi.price) AS subtotal, p.product_name 
-                    FROM order_items oi 
-                    JOIN products p ON oi.product_id = p.product_id 
-                    WHERE oi.order_id = $orderId
-                  ");
-                  while ($item = mysqli_fetch_assoc($itemsRes)) {
-                    echo "<li>" . htmlspecialchars($item['product_name']) .
-                         " × " . intval($item['quantity']) .
-                         " — ₱" . number_format($item['subtotal'], 2) . "</li>";
-                  }
-                ?>
-              </ul>
+          <tr id="items-<?= $order['order_id'] ?>" style="display: none;">
+            <td colspan="7">
+              <div class="p-3 bg-light rounded">
+                <h6>Order Details</h6>
+                <p><strong>Address:</strong> <?= htmlspecialchars($order['address'] ?? 'N/A') ?></p>
+                <h6>Items:</h6>
+                <ul>
+                  <?php
+                    $orderId = $order['order_id'];
+                    $itemsRes = mysqli_query($con, "
+                      SELECT oi.quantity, oi.price, p.product_name 
+                      FROM order_items oi 
+                      JOIN products p ON oi.product_id = p.product_id 
+                      WHERE oi.order_id = $orderId
+                    ");
+                    $items = [];
+                    while ($item = mysqli_fetch_assoc($itemsRes)) {
+                      // Group items by product_id to avoid duplicates
+                      $key = $item['product_name'];
+                      if (!isset($items[$key])) {
+                          $items[$key] = [
+                              'product_name' => $item['product_name'],
+                              'quantity' => 0,
+                              'price' => $item['price']
+                          ];
+                      }
+                      $items[$key]['quantity'] += $item['quantity'];
+                    }
+                    
+                    foreach ($items as $item) {
+                      $subtotal = $item['quantity'] * $item['price'];
+                      echo "<li>" . htmlspecialchars($item['product_name']) .
+                           " × " . intval($item['quantity']) .
+                           " — ₱" . number_format($subtotal, 2) . "</li>";
+                    }
+                  ?>
+                </ul>
+              </div>
             </td>
           </tr>
         <?php endwhile; ?>
@@ -240,5 +415,13 @@ $ordersRes = mysqli_query($con, "
       </table>
     </div>
   </div>
+</div>
+
+<script>
+  function toggleItems(orderId) {
+    const row = document.getElementById('items-' + orderId);
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+  }
+</script>
 </body>
 </html>
