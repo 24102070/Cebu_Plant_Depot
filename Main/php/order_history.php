@@ -53,7 +53,7 @@ $orders = mysqli_query($con, "SELECT * FROM orders WHERE customer_name = '$custo
     }
     
     body {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      background-color: #588157;
       font-family: 'Inter', sans-serif;
       color: var(--dark-text);
       padding-top: 180px;
