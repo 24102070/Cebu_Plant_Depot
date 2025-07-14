@@ -44,6 +44,9 @@ $orders = mysqli_query($con, "SELECT * FROM orders WHERE customer_name = '$custo
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    *::-webkit-scrollbar {
+       display: none; 
+    }
     :root {
       --primary-color: #3a5a40;
       --secondary-color: #588157;
