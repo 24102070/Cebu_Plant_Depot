@@ -42,6 +42,11 @@ $result = mysqli_query($con, $sql);
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
   <style>
+    ::-webkit-scrollbar { display: none; } 
+    * { 
+      -ms-overflow-style: none;  
+      scrollbar-width: none;     
+    }
     :root {
       --primary-green: #3a5a40;
       --secondary-green: #588157;

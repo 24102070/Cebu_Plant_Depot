@@ -16,8 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['n
     $allowed = ['On the Way', 'Rejected', 'Delivered'];
 
     if (in_array($newStatus, $allowed)) {
-        $stmt = $con->prepare("UPDATE orders SET status = ? WHERE order_id = ?");
-        $stmt->bind_param("si", $newStatus, $orderId);
+        if ($newStatus === 'On the Way' && isset($_POST['tentative_ship_datetime'])) {
+            $tentativeShipDatetime = $_POST['tentative_ship_datetime'];
+            $stmt = $con->prepare("UPDATE orders SET status = ?, tentative_ship_datetime = ? WHERE order_id = ?");
+            $stmt->bind_param("ssi", $newStatus, $tentativeShipDatetime, $orderId);
+        } else {
+            $stmt = $con->prepare("UPDATE orders SET status = ? WHERE order_id = ?");
+            $stmt->bind_param("si", $newStatus, $orderId);
+        }
 
         if ($stmt->execute()) {
             $message = "Order #$orderId marked as \"$newStatus\".";
@@ -497,7 +503,6 @@ $ordersRes = mysqli_query($con, "
 
     document.getElementById('updateModalOrderId').value = orderId;
 
-    // Format tentativeShipDatetime to yyyy-MM-ddTHH:mm for datetime-local input
     if (tentativeShipDatetime) {
       const dt = new Date(tentativeShipDatetime);
       const formatted = dt.toISOString().slice(0,16);
