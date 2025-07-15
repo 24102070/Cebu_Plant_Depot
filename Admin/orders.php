@@ -52,11 +52,17 @@ if (!empty($startDate) && !empty($endDate)) {
     $whereSQL .= " AND DATE(o.order_date) BETWEEN '" . mysqli_real_escape_string($con, $startDate) . "' AND '" . mysqli_real_escape_string($con, $endDate) . "'";
 }
 
+// Fixed query to prevent duplicate orders
 $ordersRes = mysqli_query($con, "
-    SELECT DISTINCT o.*, u.phoneNumber, u.address 
+    SELECT o.*, 
+           MAX(u.phoneNumber) AS phoneNumber, 
+           MAX(u.address) AS address, 
+           o.tentative_ship_datetime, 
+           o.adjustment_reason
     FROM orders o 
     LEFT JOIN users u ON CONCAT(u.fname, ' ', u.lname) = o.customer_name 
     $whereSQL 
+    GROUP BY o.order_id
     ORDER BY o.order_date DESC
 ");
 ?>
@@ -350,11 +356,7 @@ $ordersRes = mysqli_query($con, "
             </td>
             <td>
               <?php if ($order['status'] === 'Pending'): ?>
-                <form method="POST" class="d-inline">
-                  <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
-                  <input type="hidden" name="new_status" value="On the Way">
-                  <button class="btn btn-success btn-sm">Ship</button>
-                </form>
+                <button class="btn btn-success btn-sm" onclick="openShipModal(<?= $order['order_id'] ?>)">Ship</button>
                 <form method="POST" class="d-inline">
                   <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                   <input type="hidden" name="new_status" value="Rejected">
@@ -366,6 +368,13 @@ $ordersRes = mysqli_query($con, "
                   <input type="hidden" name="new_status" value="Delivered">
                   <button class="btn btn-primary btn-sm">Delivered</button>
                 </form>
+                <button 
+                  class="btn btn-warning btn-sm" 
+                  onclick="openUpdateShipModal(this)" 
+                  data-order-id="<?= $order['order_id'] ?>" 
+                  data-tentative_ship_datetime="<?= htmlspecialchars($order['tentative_ship_datetime']) ?>" 
+                  data-adjustment_reason="<?= htmlspecialchars($order['adjustment_reason']) ?>"
+                >Update Shipment</button>
               <?php endif; ?>
               <button class="btn btn-info btn-sm" onclick="toggleItems(<?= $order['order_id'] ?>)">Details</button>
             </td>
@@ -417,11 +426,112 @@ $ordersRes = mysqli_query($con, "
   </div>
 </div>
 
+<!-- Ship Modal -->
+<div class="modal fade" id="shipModal" tabindex="-1" aria-labelledby="shipModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" id="shipForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shipModalLabel">Set Tentative Shipment Date and Time</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="order_id" id="modalOrderId" value="">
+        <input type="hidden" name="new_status" value="On the Way">
+        <div class="mb-3">
+          <label for="tentative_ship_datetime" class="form-label">Tentative Shipment Date and Time</label>
+          <input type="datetime-local" class="form-control" id="tentative_ship_datetime" name="tentative_ship_datetime" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success">Confirm Ship</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Update Shipment Modal -->
+<div class="modal fade" id="updateShipModal" tabindex="-1" aria-labelledby="updateShipModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" id="updateShipForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateShipModalLabel">Update Tentative Shipment Date and Adjustment Reason</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="order_id" id="updateModalOrderId" value="">
+        <div class="mb-3">
+          <label for="update_tentative_ship_datetime" class="form-label">Tentative Shipment Date and Time</label>
+          <input type="datetime-local" class="form-control" id="update_tentative_ship_datetime" name="tentative_ship_datetime" required>
+        </div>
+        <div class="mb-3">
+          <label for="update_adjustment_reason" class="form-label">Adjustment Reason</label>
+          <textarea class="form-control" id="update_adjustment_reason" name="adjustment_reason" rows="3" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Shipment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
   function toggleItems(orderId) {
     const row = document.getElementById('items-' + orderId);
     row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
   }
+
+  function openShipModal(orderId) {
+    const modalOrderId = document.getElementById('modalOrderId');
+    modalOrderId.value = orderId;
+    const shipModal = new bootstrap.Modal(document.getElementById('shipModal'));
+    shipModal.show();
+  }
+
+  function openUpdateShipModal(button) {
+    const orderId = button.getAttribute('data-order-id');
+    const tentativeShipDatetime = button.getAttribute('data-tentative_ship_datetime');
+    const adjustmentReason = button.getAttribute('data-adjustment_reason');
+
+    document.getElementById('updateModalOrderId').value = orderId;
+
+    // Format tentativeShipDatetime to yyyy-MM-ddTHH:mm for datetime-local input
+    if (tentativeShipDatetime) {
+      const dt = new Date(tentativeShipDatetime);
+      const formatted = dt.toISOString().slice(0,16);
+      document.getElementById('update_tentative_ship_datetime').value = formatted;
+    } else {
+      document.getElementById('update_tentative_ship_datetime').value = '';
+    }
+
+    document.getElementById('update_adjustment_reason').value = adjustmentReason || '';
+
+    const updateShipModal = new bootstrap.Modal(document.getElementById('updateShipModal'));
+    updateShipModal.show();
+  }
 </script>
+
+<?php
+// Handle update shipment form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['tentative_ship_datetime'], $_POST['adjustment_reason'])) {
+    $orderId = (int)$_POST['order_id'];
+    $tentativeShipDatetime = $_POST['tentative_ship_datetime'];
+    $adjustmentReason = $_POST['adjustment_reason'];
+
+    $stmt = $con->prepare("UPDATE orders SET tentative_ship_datetime = ?, adjustment_reason = ? WHERE order_id = ?");
+    $stmt->bind_param("ssi", $tentativeShipDatetime, $adjustmentReason, $orderId);
+
+    if ($stmt->execute()) {
+        $message = "Shipment details updated for Order #$orderId.";
+    } else {
+        $message = "Failed to update shipment details for Order #$orderId.";
+    }
+    $stmt->close();
+}
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

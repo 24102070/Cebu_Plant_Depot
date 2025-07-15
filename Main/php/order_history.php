@@ -30,7 +30,7 @@ while ($row = mysqli_fetch_assoc($statusCountQuery)) {
     $statusCounts[$row['status']] = $row['count'];
 }
 
-$orders = mysqli_query($con, "SELECT * FROM orders WHERE customer_name = '$customerName' ORDER BY order_date DESC");
+$orders = mysqli_query($con, "SELECT *, tentative_ship_datetime, adjustment_reason FROM orders WHERE customer_name = '$customerName' ORDER BY order_date DESC");
 ?>
 
 <!DOCTYPE html>
@@ -219,6 +219,38 @@ $orders = mysqli_query($con, "SELECT * FROM orders WHERE customer_name = '$custo
       font-size: 0.85rem;
     }
     
+    .shipment-info {
+      margin-top: 12px;
+      background-color: rgba(3, 169, 244, 0.05);
+      border-left: 3px solid #03a9f4;
+      padding: 12px;
+      border-radius: 0 6px 6px 0;
+    }
+    
+    .shipment-info i {
+      color: #03a9f4;
+      margin-right: 8px;
+    }
+    
+    .shipment-label {
+      font-size: 0.9rem;
+      color: #495057;
+      font-weight: 500;
+    }
+    
+    .shipment-date {
+      font-size: 0.95rem;
+      color: #03a9f4;
+      font-weight: 600;
+    }
+    
+    .schedule-note {
+      font-size: 0.85rem;
+      color: #6c757d;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+    
     .list-group {
       border-radius: 8px;
       overflow: hidden;
@@ -342,14 +374,45 @@ $orders = mysqli_query($con, "SELECT * FROM orders WHERE customer_name = '$custo
                 <i class="far fa-calendar-alt"></i> <?php echo date("M d, Y h:i A", strtotime($order['order_date'])); ?>
               </div>
             </div>
-            <div class="order-status badge 
-                <?php 
-                  if ($order['status'] === 'Pending') echo 'badge-pending';
-                  elseif ($order['status'] === 'On the Way') echo 'badge-ontheway';
-                  elseif ($order['status'] === 'Delivered') echo 'badge-delivered';
-                  elseif ($order['status'] === 'Rejected') echo 'badge-rejected';
-                ?>">
-              <?php echo $order['status']; ?>
+            <div>
+              <div class="order-status badge 
+                  <?php 
+                    if ($order['status'] === 'Pending') echo 'badge-pending';
+                    elseif ($order['status'] === 'On the Way') echo 'badge-ontheway';
+                    elseif ($order['status'] === 'Delivered') echo 'badge-delivered';
+                    elseif ($order['status'] === 'Rejected') echo 'badge-rejected';
+                  ?>">
+                <?php echo $order['status']; ?>
+              </div>
+              <?php if ($order['status'] === 'On the Way'): ?>
+                <div class="shipment-info">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span class="shipment-label">Estimated Shipment Date:</span>
+                  </div>
+                  <div class="shipment-date">
+                    <?php 
+                      if (!empty($order['tentative_ship_datetime'])) {
+                        echo date("M d, Y h:i A", strtotime($order['tentative_ship_datetime']));
+                      } else {
+                        echo '<span class="text-muted">Not specified</span>';
+                      }
+                    ?>
+                  </div>
+                  
+                  <?php if (!empty($order['adjustment_reason'])): ?>
+                    <div class="d-flex align-items-start mt-2">
+                      <i class="fas fa-info-circle mt-1"></i>
+                      <div>
+                        <div class="shipment-label">Schedule Note:</div>
+                        <div class="schedule-note">
+                          <?php echo htmlspecialchars($order['adjustment_reason']); ?>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
           <div>
