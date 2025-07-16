@@ -39,13 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_product'])) {
     }
 }
 
-// Handle product update form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_product'])) {
     $product_id = intval($_POST['product_id']);
     $name = trim($_POST['product_name']);
     $price = floatval($_POST['product_price']);
-    $availability = intval($_POST['product_availability']);
     $quantity = intval($_POST['product_quantity']);
+    $availability = isset($_POST['product_availability']) ? intval($_POST['product_availability']) : 0;
 
     // Fetch current product image
     $sql = "SELECT product_image FROM products WHERE product_id = ?";
@@ -66,17 +65,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_product'])) {
     }
 
     $sql = "UPDATE products 
-            SET product_name = ?, product_image = ?, product_price = ?, product_availability = ?, product_quantity = ?
+            SET product_name = ?, product_image = ?, product_price = ?, 
+                product_availability = ?, product_quantity = ?
             WHERE product_id = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ssdsii", $name, $newImage, $price, $availability, $quantity, $product_id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-    // Redirect to avoid form resubmission
     header("Location: product_list.php");
     exit();
 }
+
 
 // Get filter values
 $search = $_GET['search'] ?? '';
@@ -437,24 +437,42 @@ $result = mysqli_query($con, $sql);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                                    <tr data-product='<?php echo json_encode($row); ?>'>
-                                        <td style="cursor: pointer;"><?php echo htmlspecialchars($row['product_name']); ?></td>
-                                        <td><?php echo number_format($row['product_price'], 2); ?></td>
-                                        <td><?php echo $row['product_quantity']; ?></td>
-                                        <td>
-                                            <span class="status-badge <?php echo $row['product_availability'] ? 'status-good' : 'status-out'; ?>">
-                                                <?php echo $row['product_availability'] ? 'Available' : 'Out of Stock'; ?>
+                               <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                  <tr data-product='<?php echo json_encode($row); ?>'>
+                                      <td style="cursor: pointer;"><?php echo htmlspecialchars($row['product_name']); ?></td>
+                                      <td><?php echo number_format($row['product_price'], 2); ?></td>
+                                      <td><?php echo $row['product_quantity']; ?></td>
+                                      <td>
+                                            <span class="status-badge
+                                                <?php 
+                                                    if ($row['product_quantity'] == 0) {
+                                                        echo 'status-out';
+                                                    } elseif ($row['product_availability'] == 0) {
+                                                        echo 'status-out';
+                                                    } else {
+                                                        echo 'status-good';
+                                                    }
+                                                ?>">
+                                                <?php 
+                                                    if ($row['product_quantity'] == 0) {
+                                                        echo 'Out of Stock';
+                                                    } elseif ($row['product_availability'] == 0) {
+                                                        echo 'Not Available';
+                                                    } else {
+                                                        echo 'Available';
+                                                    }
+                                                ?>
                                             </span>
                                         </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning edit-btn" type="button"><i class="fas fa-edit"></i> Edit</button>
-                                            <button class="btn btn-sm btn-danger delete-btn" type="button" data-product-name="<?php echo htmlspecialchars($row['product_name']); ?>">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endwhile; ?>
+
+                                      <td>
+                                          <button class="btn btn-sm btn-warning edit-btn" type="button"><i class="fas fa-edit"></i> Edit</button>
+                                          <button class="btn btn-sm btn-danger delete-btn" type="button" data-product-name="<?php echo htmlspecialchars($row['product_name']); ?>">
+                                              <i class="fas fa-trash"></i> Delete
+                                          </button>
+                                      </td>
+                                  </tr>
+                              <?php endwhile; ?>
                             </tbody>
                         </table>
                     </div>

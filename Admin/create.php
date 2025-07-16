@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['product_name']);
     $price = floatval($_POST['product_price']);
-    $availability = isset($_POST['product_availability']) ? 1 : 0;
+    $availability = intval($_POST['product_availability']); 
     $quantity = intval($_POST['product_quantity']);
 
     $imgName = $_FILES['product_image']['name'];
