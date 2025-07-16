@@ -22,14 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cart_data'])) {
         $user = mysqli_fetch_assoc($userQuery);
         $customerName = $user['fname'] . ' ' . $user['lname'];
 
-        // Check how many orders user has placed today
-        $today = date('Y-m-d');
-        $orderCountQuery = mysqli_query($con, "SELECT COUNT(*) as count FROM orders WHERE customer_name = '$customerName' AND DATE(order_date) = '$today'");
+        // Check how many orders user has placed in total
+        $orderCountQuery = mysqli_query($con, "SELECT COUNT(*) as count FROM orders WHERE customer_name = '$customerName'");
         $orderCountResult = mysqli_fetch_assoc($orderCountQuery);
         $orderCount = $orderCountResult['count'];
 
         if ($orderCount >= 2) {
-            $message = "You have reached the limit of 2 orders per day.";
+            $message = "You have reached the limit of 2 orders.";
         } else {
             $totalAmount = 0;
             $hasStockIssue = false;
@@ -87,34 +86,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cart_data'])) {
   <meta charset="UTF-8">
   <title>Order Status</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #dad7cd;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .message-box {
-      max-width: 500px;
-      margin: 100px auto;
-      background-color: #fff;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
-      text-align: center;
-    }
-    .btn-back {
-      margin-top: 20px;
-      background-color: #3a5a40;
-      color: white;
-    }
-    .btn-back:hover {
-      background-color: #588157;
-    }
-  </style>
+  <link rel="shortcut icon" href="../images/logonavwhite.png" type="image/png">
+    <style>
+      body {
+        background-color: #dad7cd;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .message-box {
+        max-width: 500px;
+        margin: 100px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
+        text-align: center;
+      }
+      .btn-back {
+        margin-top: 20px;
+        background-color: #3a5a40;
+        color: white;
+      }
+      .btn-back:hover {
+        background-color: #588157;
+      }
+      .limit-message {
+        background-color: #ff4d4d !important;
+        color: white !important;
+      }
+    </style>
 </head>
 <body>
   <div class="message-box">
     <?php if ($message): ?>
-      <div class="alert alert-<?php echo strpos($message, 'successfully') !== false ? 'success' : 'warning'; ?>">
+      <div class="alert <?php echo ($message === 'You have reached the limit of 2 orders.') ? 'limit-message' : (strpos($message, 'successfully') !== false ? 'alert-success' : 'alert-warning'); ?>">
         <?php echo htmlspecialchars($message); ?>
       </div>
     <?php endif; ?>
