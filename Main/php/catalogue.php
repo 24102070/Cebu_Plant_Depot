@@ -11,7 +11,6 @@ $search = $_GET['search'] ?? '';
 $minPrice = $_GET['min_price'] ?? '';
 $maxPrice = $_GET['max_price'] ?? '';
 
-
 $conditions = ["product_availability = 1"];
 if (!empty($search)) {
     $conditions[] = "product_name LIKE '%" . mysqli_real_escape_string($con, $search) . "%'";
@@ -75,7 +74,6 @@ $result = mysqli_query($con, $sql);
       box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
       padding: 0.8rem 1rem;
     }
-    
     
     .catalogue-header {
       text-align: center;
@@ -223,7 +221,6 @@ $result = mysqli_query($con, $sql);
       transform: translateY(-2px);
     }
     
-    
     .cart-sidebar {
       position: fixed;
       top: 70px;
@@ -329,6 +326,22 @@ $result = mysqli_query($con, $sql);
       z-index: 100;
     }
     
+    /* New styles for account page */
+    .card-header {
+      border-radius: 10px 10px 0 0 !important;
+    }
+    
+    .account-info p {
+      margin-bottom: 15px;
+      font-size: 1.05rem;
+    }
+    
+    .account-info strong {
+      color: var(--primary-green);
+      min-width: 100px;
+      display: inline-block;
+    }
+    
     @media (max-width: 1199.98px) {
       .catalogue-container {
         margin-right: 0;
@@ -362,6 +375,11 @@ $result = mysqli_query($con, $sql);
       .catalogue-header h2 {
         font-size: 2rem;
       }
+      
+      .nav-button-container {
+        margin-left: 8px;
+        padding: 6px 10px;
+      }
     }
   </style>
 </head>
@@ -370,6 +388,11 @@ $result = mysqli_query($con, $sql);
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
         <div class="d-flex order-lg-3 position-static position-lg-absolute end-0 me-3 align-items-center">
+          <div class="nav-button-container">
+            <a href="user_info.php" class="nav-link">
+              <i class="fas fa-user"></i> <span class="d-none d-md-inline">My Account</span>
+            </a>
+          </div>
           <div class="nav-button-container">
             <a href="order_history.php" class="nav-link">
               <i class="fas fa-clock-rotate-left"></i> <span class="d-none d-md-inline">Order History</span>
@@ -472,7 +495,7 @@ $result = mysqli_query($con, $sql);
     </div>
   </footer>
 
-<script>
+  <script>
     const cart = {};
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
