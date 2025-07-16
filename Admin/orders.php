@@ -483,6 +483,25 @@ $ordersRes = mysqli_query($con, "
   </div>
 </div>
 
+<!-- Confirmation Modal for Reject -->
+<div class="modal fade" id="rejectConfirmModal" tabindex="-1" aria-labelledby="rejectConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectConfirmModalLabel">Confirm Reject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reject this order?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmRejectBtn">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   function toggleItems(orderId) {
     const row = document.getElementById('items-' + orderId);
@@ -516,6 +535,32 @@ $ordersRes = mysqli_query($con, "
     const updateShipModal = new bootstrap.Modal(document.getElementById('updateShipModal'));
     updateShipModal.show();
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var allForms = document.querySelectorAll('form');
+    var rejectModal = new bootstrap.Modal(document.getElementById('rejectConfirmModal'));
+    var confirmRejectBtn = document.getElementById('confirmRejectBtn');
+    var currentForm = null;
+
+    var rejectForms = Array.from(allForms).filter(function(form) {
+      return form.querySelector('input[name="new_status"][value="Rejected"]') !== null;
+    });
+
+    rejectForms.forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        currentForm = form;
+        rejectModal.show();
+      });
+    });
+
+    confirmRejectBtn.addEventListener('click', function() {
+      if (currentForm) {
+        rejectModal.hide();
+        currentForm.submit();
+      }
+    });
+  });
 </script>
 
 <?php

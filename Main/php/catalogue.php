@@ -348,8 +348,6 @@ $result = mysqli_query($con, $sql);
     
     .navbar-brand img:hover { transform: scale(1.05); }
   
-    
-  
     .card-header {
       border-radius: 10px 10px 0 0 !important;
     }
@@ -503,12 +501,31 @@ $result = mysqli_query($con, $sql);
       <h4><i class="fas fa-shopping-cart me-2"></i>Your Cart</h4>
       <div id="cart-items"></div>
       <div class="total-price">Total: ₱<span id="cart-total">0.00</span></div>
-      <form action="order.php" method="POST">
+      <form action="order.php" method="POST" id="checkout-form">
         <input type="hidden" name="cart_data" id="cart_data">
-        <button type="submit" class="btn btn-success mt-3 w-100">
+        <button type="button" class="btn btn-success mt-3 w-100" id="checkout-button">
           <i class="fas fa-check-circle me-2"></i>Checkout
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Confirm Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to proceed with the checkout?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success" id="confirm-checkout-btn">Confirm</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -518,6 +535,7 @@ $result = mysqli_query($con, $sql);
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const cart = {};
     const cartItemsContainer = document.getElementById('cart-items');
@@ -583,7 +601,35 @@ $result = mysqli_query($con, $sql);
         updateCart();
       });
     });
+
+    // Confirmation modal logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkoutButton = document.getElementById('checkout-button');
+      const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+      const confirmCheckoutBtn = document.getElementById('confirm-checkout-btn');
+      const checkoutForm = document.getElementById('checkout-form');
+
+      if (checkoutButton) {
+        checkoutButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Check if cart is empty
+          if (Object.keys(cart).length === 0) {
+            alert('Your cart is empty. Please add items before checkout.');
+            return;
+          }
+          
+          confirmModal.show();
+        });
+      }
+
+      if (confirmCheckoutBtn) {
+        confirmCheckoutBtn.addEventListener('click', function() {
+          confirmModal.hide();
+          checkoutForm.submit();
+        });
+      }
+    });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
