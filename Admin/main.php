@@ -356,9 +356,27 @@ for ($i = 5; $i >= 0; $i--) {
       <div class="welcome-message">
         <h2><i class="fas fa-chart-line"></i> Sales Dashboard</h2>
         <p>Overview of your store's performance</p>
+        <a href="download_sales_pdf.php" class="download-pdf-link"><i class="fas fa-file-pdf"></i> Download Sales PDF</a>
       </div>
       <a href="../index.php" class="btn logout-btn text-white"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
+
+    <style>
+      .download-pdf-link {
+        color: #344e41;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-top: 0.5rem;
+      }
+      .download-pdf-link:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    </style>
 
     <div class="row mb-4">
       <div class="col-md-4">
