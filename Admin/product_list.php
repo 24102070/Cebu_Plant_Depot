@@ -363,7 +363,7 @@ $result = mysqli_query($con, $sql);
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">
-                 <a href="main.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
+                <a href="main.php"><img src="../images/Plantlogo.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
             </div>
         </div>
         

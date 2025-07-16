@@ -331,7 +331,25 @@ $result = mysqli_query($con, $sql);
       z-index: 100;
     }
     
-    /* New styles for account page */
+      .navbar {
+        background-color: #344e41 !important;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .navbar.scrolled { padding: 0.3rem 1rem; }
+    
+    .navbar-brand img {
+        height: 3.5rem;
+        width: auto;
+        transition: transform 0.3s ease;
+    }
+    
+    .navbar-brand img:hover { transform: scale(1.05); }
+  
+    
+  
     .card-header {
       border-radius: 10px 10px 0 0 !important;
     }
@@ -418,7 +436,7 @@ $result = mysqli_query($con, $sql);
           </ul>
         </div>
         <div>
-          <a href="catalogue.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
+            <img src="../images/logonavwhite.png" alt="Cebu Plant Depot Logo" class="img-fluid" style="height: 3.5rem; width: auto;">
         </div>
       </div>
     </nav>

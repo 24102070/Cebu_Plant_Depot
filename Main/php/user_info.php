@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
           </ul>
         </div>
         <div>
-          <a href="catalogue.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
+          <img src="../images/logonavwhite.png" alt="Cebu Plant Depot Logo" class="img-fluid" style="height: 3.5rem; width: auto;">
         </div>
       </div>
     </nav>
