@@ -384,7 +384,6 @@ $orders = mysqli_query($con, "SELECT *, tentative_ship_datetime, adjustment_reas
                   ?>">
                 <?php echo $order['status']; ?>
               </div>
-              <?php if ($order['status'] === 'On the Way'): ?>
                 <div class="shipment-info">
                   <div class="d-flex align-items-center">
                     <i class="fas fa-shipping-fast"></i>
@@ -412,7 +411,6 @@ $orders = mysqli_query($con, "SELECT *, tentative_ship_datetime, adjustment_reas
                     </div>
                   <?php endif; ?>
                 </div>
-              <?php endif; ?>
             </div>
           </div>
           <div>
