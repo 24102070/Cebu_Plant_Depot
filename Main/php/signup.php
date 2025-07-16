@@ -4,51 +4,64 @@ include("database.php");
 
 $error = "";
 
+if (!isset($_SESSION['captcha_attempts'])) {
+  $_SESSION['captcha_attempts'] = 0;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $fname = filter_input(INPUT_POST, "fname", FILTER_SANITIZE_SPECIAL_CHARS);
-  $lname = filter_input(INPUT_POST, "lname", FILTER_SANITIZE_SPECIAL_CHARS);
-  $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-  $password = filter_input(INPUT_POST, "password", FILTER_UNSAFE_RAW);
-  $confirm_password = filter_input(INPUT_POST, "confirm_password", FILTER_UNSAFE_RAW);
-  $phoneNumber = filter_input(INPUT_POST, "phoneNumber", FILTER_SANITIZE_SPECIAL_CHARS);
-  $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_SPECIAL_CHARS);
+  if (isset($_POST['captcha_failed'])) {
+    $_SESSION['captcha_attempts']++;
+  }
 
-  if (empty($fname) || empty($lname) || empty($email) || empty($password) || empty($confirm_password)) {
-    $error = "Please fill out all fields.";
-  } elseif ($password !== $confirm_password) {
-    $error = "Passwords do not match.";
-  } elseif (strlen($password) < 8) {
-    $error = "Password must be at least 8 characters.";
+  if ($_SESSION['captcha_attempts'] >= 3) {
+    $error = "You have exceeded the maximum number of CAPTCHA attempts. Please try again later.";
   } else {
-    // Check if email already exists
-    $checkSql = "SELECT email FROM users WHERE email = ?";
-    $checkStmt = mysqli_prepare($con, $checkSql);
-    mysqli_stmt_bind_param($checkStmt, "s", $email);
-    mysqli_stmt_execute($checkStmt);
-    mysqli_stmt_store_result($checkStmt);
+    $fname = filter_input(INPUT_POST, "fname", FILTER_SANITIZE_SPECIAL_CHARS);
+    $lname = filter_input(INPUT_POST, "lname", FILTER_SANITIZE_SPECIAL_CHARS);
+    $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
+    $password = filter_input(INPUT_POST, "password", FILTER_UNSAFE_RAW);
+    $confirm_password = filter_input(INPUT_POST, "confirm_password", FILTER_UNSAFE_RAW);
+    $phoneNumber = filter_input(INPUT_POST, "phoneNumber", FILTER_SANITIZE_SPECIAL_CHARS);
+    $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_SPECIAL_CHARS);
 
-    if (mysqli_stmt_num_rows($checkStmt) > 0) {
-      $error = "Email has already been registered!";
+    if (empty($fname) || empty($lname) || empty($email) || empty($password) || empty($confirm_password)) {
+      $error = "Please fill out all fields.";
+    } elseif ($password !== $confirm_password) {
+      $error = "Passwords do not match.";
+    } elseif (strlen($password) < 8) {
+      $error = "Password must be at least 8 characters.";
     } else {
-      // Hash password and insert user
-      $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-      $role = "customer";
+      // Check if email already exists
+      $checkSql = "SELECT email FROM users WHERE email = ?";
+      $checkStmt = mysqli_prepare($con, $checkSql);
+      mysqli_stmt_bind_param($checkStmt, "s", $email);
+      mysqli_stmt_execute($checkStmt);
+      mysqli_stmt_store_result($checkStmt);
 
-      $insertSql = "INSERT INTO users (fname, lname, email, password, role, phoneNumber, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
-      $insertStmt = mysqli_prepare($con, $insertSql);
-      mysqli_stmt_bind_param($insertStmt, "sssssss", $fname, $lname, $email, $hashedPassword, $role, $phoneNumber, $address);
-
-      if (mysqli_stmt_execute($insertStmt)) {
-        header("Location: index.php"); // Redirect to login
-        exit;
+      if (mysqli_stmt_num_rows($checkStmt) > 0) {
+        $error = "Email has already been registered!";
       } else {
-        $error = "Registration failed. Try again later.";
+        // Hash password and insert user
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $role = "customer";
+
+        $insertSql = "INSERT INTO users (fname, lname, email, password, role, phoneNumber, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $insertStmt = mysqli_prepare($con, $insertSql);
+        mysqli_stmt_bind_param($insertStmt, "sssssss", $fname, $lname, $email, $hashedPassword, $role, $phoneNumber, $address);
+
+        if (mysqli_stmt_execute($insertStmt)) {
+          $_SESSION['captcha_attempts'] = 0; // reset on success
+          header("Location: index.php"); // Redirect to login
+          exit;
+        } else {
+          $error = "Registration failed. Try again later.";
+        }
+
+        mysqli_stmt_close($insertStmt);
       }
 
-      mysqli_stmt_close($insertStmt);
+      mysqli_stmt_close($checkStmt);
     }
-
-    mysqli_stmt_close($checkStmt);
   }
 
   mysqli_close($con);
@@ -380,6 +393,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           captchaInput.value = '';
           captchaError.style.display = 'none';
         } else {
+          if (captchaAttempts >= 3) {
+            captchaError.textContent = "You have exceeded the maximum number of CAPTCHA attempts. Please try again later.";
+            captchaError.style.display = 'block';
+            return;
+          }
           validateCaptcha();
         }
       });
@@ -418,8 +436,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           captchaVerified.value = 'true';
           captchaModal.style.display = 'none';
           captchaError.style.display = 'none';
+          captchaAttempts = 0;
           form.submit(); // re-trigger actual form submit
         } else {
+          captchaAttempts++;
+          if (captchaAttempts >= 3) {
+            captchaError.textContent = "You have exceeded the maximum number of CAPTCHA attempts. Please try again later.";
+            captchaError.style.display = 'block';
+            return;
+          }
           captchaError.style.display = 'block';
           captchaInput.value = '';
           currentCaptcha = generateCaptcha();
@@ -436,6 +461,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         return captcha;
       }
+
+      let captchaAttempts = 0;
 
       function renderCaptcha(captcha) {
         const preview = document.querySelector('.captcha-form .preview');
