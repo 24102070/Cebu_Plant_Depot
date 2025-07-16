@@ -363,37 +363,78 @@ $result = mysqli_query($con, $sql);
         font-size: 2rem;
       }
     }
+
+    .navbar {
+        background-color: #344e41 !important;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .navbar.scrolled { padding: 0.3rem 1rem; }
+    
+    .navbar-brand img {
+        height: 3.5rem;
+        width: auto;
+        transition: transform 0.3s ease;
+    }
+    
+    .navbar-brand img:hover { transform: scale(1.05); }
+    
+    .nav-link {
+        color: #ffffff !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        margin: 0 0.25rem;
+        position: relative;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+    }
+    
+    .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); }
+    
+  
+    .nav-button-container .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .nav-button-container .nav-link i {
+        font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
   <div class="main-content">
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid">
-        <div class="d-flex order-lg-3 position-static position-lg-absolute end-0 me-3 align-items-center">
-          <div class="nav-button-container">
-            <a href="order_history.php" class="nav-link">
-              <i class="fas fa-clock-rotate-left"></i> <span class="d-none d-md-inline">Order History</span>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand me-lg-5" href="catalogue.php">
+                <img src="../images/logonavwhite.png" alt="Cebu Plant Depot Logo" class="img-fluid" style="height: 3.5rem; width: auto;">
             </a>
-          </div>
-          <div class="nav-button-container">
-            <a href="logout.php" class="nav-link">
-              <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Logout</span>
-            </a>
-          </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link text-white fw-bold" href="catalogue.php">Shop</a></li>
+                </ul>
+                <div class="d-flex ms-auto">
+                    <div class="nav-button-container me-2">
+                        <a href="order_history.php" class="nav-link">
+                            <i class="fas fa-clock-rotate-left"></i> <span class="d-none d-md-inline">Order History</span>
+                        </a>
+                    </div>
+                    <div class="nav-button-container">
+                        <a href="logout.php" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button class="navbar-toggler order-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse order-2 order-lg-1" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link text-white fw-bold" href="catalogue.php">Shop</a></li>
-          </ul>
-        </div>
-        <div>
-          <a href="catalogue.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;"></a>
-        </div>
-      </div>
     </nav>
+</div>
 
     <div class="catalogue-container">
       <section class="mt-5 mb-5 mx-3 catalogue-header">

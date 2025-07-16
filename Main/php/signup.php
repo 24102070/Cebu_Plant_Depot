@@ -140,10 +140,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       text-decoration: underline;
     }
 
-    #logo {
-      width: 100%;
-      max-width: 400px;
-    }
+.navbar {
+            background-color: #344e41 !important;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled { padding: 0.3rem 1rem; }
+        
+        .navbar-brand img {
+            height: 3.5rem;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand img:hover { transform: scale(1.05); }
+        
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); }
+        
+        .login-btn {
+            background-color: #588157;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem !important;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+        
+        .login-btn:hover {
+            background-color: #ffc107;
+            color: #000 !important;
+        }
+
 
     @media (min-width: 768px) {
       .form-section {
@@ -232,38 +270,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   border-color: #588157;
   transform: scale(1.02);
 }
+
+.navbar {
+            background-color: #344e41 !important;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled { padding: 0.3rem 1rem; }
+        
+        .navbar-brand img {
+            height: 3.5rem;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand img:hover { transform: scale(1.05); }
+        
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3a5a40;">
-    <div class="container-fluid">
-      <div class="d-flex order-lg-3 position-static position-lg-absolute end-0 me-3">
-        <a href="#" class="nav-link text-white me-3">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-        <a href="index.php" class="nav-link text-white">Login</a>
-      </div>
-      <button class="navbar-toggler order-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse order-2 order-lg-1" id="navbarNav" style="align-content: left;">
-        <ul class="navbar-nav mx-auto ">
-          <li class="nav-item">
-            <a class="nav-link text-white fw-bold" href="../../index.php">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white fw-bold" href="../../aboutus.php">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white fw-bold" href="../../contact.php">Contact Us</a>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <a href="index.php"><img src="../images/logowhite.png" style="width: 8rem; padding: 5px;" class="img-fluid"></a>
-      </div>
-    </div>
-  </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand me-lg-5" href="index.php">
+                <img src="../images/logonavwhite.png" alt="Cebu Plant Depot Logo" class="img-fluid">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="../../index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../aboutus.php">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../contact.php">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
   <div class="main">
     <div class="container-custom row">
@@ -317,12 +372,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
       </div>
       <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
-        <img class="img-fluid" src="../images/logo.png" alt="Cebu Plant Depot Logo" id="logo">
+        <img class="img-fluid" src="../images/logolanding2.png" alt="Cebu Plant Depot Logo" id="logo" style="padding: 20px;">
       </div>
     </div>
   </div>
 
-  <!-- CAPTCHA Modal -->
+  
   <div class="captcha-modal">
     <div class="captcha-form">
       <h4 style="margin-bottom: 20px; text-align: center;">Verify you're human</h4>
