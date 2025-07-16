@@ -22,50 +22,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cart_data'])) {
         $user = mysqli_fetch_assoc($userQuery);
         $customerName = $user['fname'] . ' ' . $user['lname'];
 
-        $totalAmount = 0;
-        $hasStockIssue = false;
+        // Check how many orders user has placed today
+        $today = date('Y-m-d');
+        $orderCountQuery = mysqli_query($con, "SELECT COUNT(*) as count FROM orders WHERE customer_name = '$customerName' AND DATE(order_date) = '$today'");
+        $orderCountResult = mysqli_fetch_assoc($orderCountQuery);
+        $orderCount = $orderCountResult['count'];
 
-        foreach ($cart as $productId => $item) {
-            $productId = (int)$productId;
-            $qty = (int)$item['qty'];
-
-            $prodQuery = mysqli_query($con, "SELECT product_quantity FROM products WHERE product_id = $productId");
-            $prod = mysqli_fetch_assoc($prodQuery);
-
-            if (!$prod || $prod['product_quantity'] < $qty) {
-                $hasStockIssue = true;
-                break;
-            }
-
-            $totalAmount += $item['price'] * $qty;
-        }
-
-        if ($hasStockIssue) {
-            $message = "One or more products in your cart no longer have enough stock.";
+        if ($orderCount >= 2) {
+            $message = "You have reached the limit of 2 orders per day.";
         } else {
-            // Create order with status
-            $status = 'Pending';
-            $stmt = $con->prepare("INSERT INTO orders (customer_name, total_amount, status) VALUES (?, ?, ?)");
-            $stmt->bind_param("sds", $customerName, $totalAmount, $status);
-            $stmt->execute();
-            $orderId = $stmt->insert_id;
-            $stmt->close();
+            $totalAmount = 0;
+            $hasStockIssue = false;
 
-            // Insert each order item and update product stock
             foreach ($cart as $productId => $item) {
                 $productId = (int)$productId;
                 $qty = (int)$item['qty'];
-                $price = (float)$item['price'];
 
-                $stmt = $con->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("iiid", $orderId, $productId, $qty, $price);
-                $stmt->execute();
-                $stmt->close();
+                $prodQuery = mysqli_query($con, "SELECT product_quantity FROM products WHERE product_id = $productId");
+                $prod = mysqli_fetch_assoc($prodQuery);
 
-                $con->query("UPDATE products SET product_quantity = product_quantity - $qty WHERE product_id = $productId");
+                if (!$prod || $prod['product_quantity'] < $qty) {
+                    $hasStockIssue = true;
+                    break;
+                }
+
+                $totalAmount += $item['price'] * $qty;
             }
 
-            $message = "Your order has been placed successfully!";
+            if ($hasStockIssue) {
+                $message = "One or more products in your cart no longer have enough stock.";
+            } else {
+                // Create order with status
+                $status = 'Pending';
+                $stmt = $con->prepare("INSERT INTO orders (customer_name, total_amount, status) VALUES (?, ?, ?)");
+                $stmt->bind_param("sds", $customerName, $totalAmount, $status);
+                $stmt->execute();
+                $orderId = $stmt->insert_id;
+                $stmt->close();
+
+                // Insert each order item and update product stock
+                foreach ($cart as $productId => $item) {
+                    $productId = (int)$productId;
+                    $qty = (int)$item['qty'];
+                    $price = (float)$item['price'];
+
+                    $stmt = $con->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
+                    $stmt->bind_param("iiid", $orderId, $productId, $qty, $price);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    $con->query("UPDATE products SET product_quantity = product_quantity - $qty WHERE product_id = $productId");
+                }
+
+                $message = "Your order has been placed successfully!";
+            }
         }
     }
 }
