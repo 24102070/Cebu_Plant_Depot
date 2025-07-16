@@ -35,6 +35,7 @@ unset($_SESSION['reset_email'], $_SESSION['reset_message']);
   <meta charset="UTF-8">
   <title>Manual Reset Request</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="../images/logonavwhite.png" type="image/png">
   <style>
     body {
       background: linear-gradient(to right, #3a5a40, #588157);
