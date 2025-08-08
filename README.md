@@ -1,7 +1,5 @@
 # 🌿🌱 Cebu Plant Depot — *POS & IMS System*
 
-![Cebu Plant Depot Banner](./wwwroot/images/banner.png)
-
 > 🍃 *Where technology meets greenery.*  
 > Cebu Plant Depot is a **Point of Sale (POS)** and **Inventory Management System (IMS)** designed for plant shops.  
 > It offers a **seamless experience** for both business owners and customers, helping your garden business grow as beautifully as your plants.
@@ -51,12 +49,4 @@ It empowers customers to **browse, buy, and track orders** while enabling admins
 
 ---
 
-## 🖼 System Preview
-
-![Customer Dashboard](./wwwroot/images/customer-preview.png)  
-![Admin Dashboard](./wwwroot/images/admin-preview.png)
-
----
-
-## 📂 Project Structure
 
