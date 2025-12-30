@@ -1,92 +1,115 @@
-```markdown
-# 🌿 Cebu Plant Depot - Point of Sale & Inventory Management System
+# 🌿 Cebu Plant Depot  
+### Point of Sale & Inventory Management System
 
-![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)
-![PHP Version](https://img.shields.io/badge/PHP-8.2+-blue.svg)
-![MySQL Version](https://img.shields.io/badge/MySQL-10.4+-blue.svg)
-![Bootstrap Version](https://img.shields.io/badge/Bootstrap-5.3.3-blue.svg)
+<p align="center">
+  🌱 <strong>Where technology meets greenery</strong> 🌱
+</p>
 
-🌱 **Where technology meets greenery.** Cebu Plant Depot is a comprehensive Point of Sale (POS) and Inventory Management System (IMS) designed specifically for plant shops and nurseries. This system helps plant businesses streamline operations, manage inventory, and provide a seamless shopping experience for customers.
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" />
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue.svg" />
+  <img src="https://img.shields.io/badge/MySQL-10.4+-blue.svg" />
+  <img src="https://img.shields.io/badge/Bootstrap-5.3.3-blue.svg" />
+</p>
+
+Cebu Plant Depot is a **web-based Point of Sale (POS) and Inventory Management System** built specifically for plant shops and nurseries.  
+It streamlines sales, inventory tracking, and order management while delivering a smooth customer shopping experience.
+
+---
+
+## 📚 Table of Contents
+- [✨ Features](#-features)
+- [🛠 Tech Stack](#-tech-stack)
+- [📦 Installation](#-installation)
+- [🎯 Usage](#-usage)
+- [📁 Project Structure](#-project-structure)
+- [🔧 Configuration](#-configuration)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+- [👥 Authors & Contributors](#-authors--contributors)
+- [🐛 Issues & Support](#-issues--support)
+- [🗺️ Roadmap](#-roadmap)
 
 ---
 
 ## ✨ Features
 
-### 🌿 For Customers
-- **Browse Products**: View all available plants and gardening supplies with detailed descriptions
-- **Shopping Cart**: Add, update, or remove items with ease
-- **Secure Checkout**: Fast and secure payment processing
-- **Order Tracking**: Real-time order status updates
-- **Order History**: Access past purchases for quick reordering
-- **User Accounts**: Personalized experience with profile management
+### 🌿 Customer Features
+- Browse plants and gardening products
+- Shopping cart management
+- Secure checkout flow
+- Real-time order tracking
+- Order history for easy reordering
+- User accounts and profile management
 
-### 🌳 For Business Owners & Admins
-- **CRUD Operations**: Manage products, categories, and stock levels
-- **Order Management**: Update order statuses from processing to delivery
-- **Real-Time Dashboard**: Interactive analytics with sales and inventory insights
-- **Sales Reports**: Generate detailed PDF reports of sales statistics
-- **Low Stock Alerts**: Automated notifications for inventory management
-- **User Management**: Create and manage customer accounts
+### 🌳 Admin & Business Features
+- Full CRUD operations for products and inventory
+- Order processing and status management
+- Interactive sales & inventory dashboard
+- PDF sales report generation
+- Low-stock alerts
+- User and role management
 
-### 🔧 Technical Features
-- **Responsive Design**: Works seamlessly on all devices
-- **Secure Authentication**: Password hashing and session management
-- **Database Integration**: MySQL for robust data storage
-- **PDF Generation**: Detailed sales reports with fpdf library
-- **Image Uploads**: Product image management
+### 🔧 Technical Highlights
+- Fully responsive UI
+- Secure authentication with password hashing
+- MySQL database integration
+- PDF report generation using **FPDF**
+- Image upload and management
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
-| Category          | Technologies Used                          |
-|-------------------|-------------------------------------------|
-| **Language**      | PHP 8.2+                                  |
-| **Frontend**      | Bootstrap 5.3.3, HTML5, CSS3, JavaScript  |
-| **Backend**       | MySQL 10.4+, PHP PDO/MySQLi              |
-| **Libraries**     | Font Awesome, jQuery (if applicable)      |
-| **PDF Generation**| fpdf library                              |
-| **Authentication**| Session-based with password hashing      |
+| Layer | Technologies |
+|------|-------------|
+| **Language** | PHP 8.2+ |
+| **Frontend** | HTML5, CSS3, JavaScript, Bootstrap 5.3.3 |
+| **Backend** | PHP (PDO/MySQLi), MySQL 10.4+ |
+| **Libraries** | Font Awesome, jQuery (optional) |
+| **Reports** | FPDF |
+| **Auth** | Session-based authentication |
 
 ---
 
 ## 📦 Installation
 
 ### Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-- **PHP 8.2+** installed on your system
-- **MySQL 10.4+** database server
-- **Apache/Nginx** web server
-- **Composer** (for dependency management, if applicable)
+- PHP **8.2+**
+- MySQL **10.4+**
+- Apache or Nginx
+- Composer (optional)
 
 ### Quick Start
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/Cebu_Plant_Depot.git
-   cd Cebu_Plant_Depot
-   ```
+```bash
+git clone https://github.com/24102070/Cebu_Plant_Depot.git
+cd Cebu_Plant_Depot
 
-2. **Set up the database:**
-   - Import the provided `cebu_plant_depot.sql` file into your MySQL database
-   - Update the database credentials in `Main/php/database.php`:
-     ```php
-     $db_server = "your_mysql_host";
-     $db_user   = "your_mysql_username";
-     $db_pass   = "your_mysql_password";
-     $db_name   = "cebu_plant_depot";
-     ```
 
-3. **Configure the application:**
-   - Upload all files to your web server directory
-   - Ensure proper file permissions for uploads and image directories
+Import Database
 
-4. **Run the application:**
-   - Access the application through your web browser: `http://yourdomain.com/Cebu_Plant_Depot`
+Import cebu_plant_depot.sql into MySQL
 
----
+Configure Database
+
+// Main/php/database.php
+$db_server = "localhost";
+$db_user   = "root";
+$db_pass   = "";
+$db_name   = "cebu_plant_depot";
+
+
+Deploy
+
+Upload files to your web server
+
+Set write permissions for image/upload folders
+
+Run
+
+cebuplantdepot.dcism.org
+
 
 ## 🎯 Usage
 
@@ -313,21 +336,15 @@ We welcome contributions from the community! Here's how you can contribute:
 
 ---
 
-## 📝 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👥 Authors & Contributors
 
 ### Core Team
 
-- **Avryl Arranguez** - System Architecture
+- **Avryl Arranguez** - Frontend Development
 - **Dustin Balansag** - Frontend Development
-- **Osbev Cabucos** - Backend Development
-- **Ynaki Galve** - Database Design
-- **Drixyl Nacu** - Quality Assurance
+- **Osbev Cabucos** - BackendD evelopment
+- **Ynaki Galve** - UI/UX
+- **Drixyl Nacu** - Backend Development
 
 ### Special Thanks
 
@@ -353,7 +370,7 @@ If you encounter any problems or have feature requests:
 ### Getting Help
 
 - **Community Forum**: Join our [Discussion Board](link-to-discussion-board)
-- **Email Support**: support@cebuplantdepot.com
+- **Email Support**: rezuesan@gmail.com
 - **Documentation**: Check the [Wiki](link-to-wiki) for detailed guides
 
 ### FAQ
@@ -409,16 +426,8 @@ Join thousands of plant businesses that have already improved their operations w
 🌱 **Let's make your plant business bloom!**
 ```
 
-This README.md file provides a comprehensive guide to the Cebu Plant Depot project, making it attractive for developers to contribute and use. It includes:
 
-1. A compelling overview with clear value proposition
-2. Detailed feature lists with emojis for visual appeal
-3. Complete installation instructions
-4. Practical usage examples with code snippets
-5. Clear project structure documentation
-6. Contribution guidelines
-7. Roadmap for future development
-8. Support information
-9. Professional formatting and modern GitHub best practices
 
-The README is designed to be both informative and engaging, encouraging developers to explore, use, and contribute to the project.
+
+
+
